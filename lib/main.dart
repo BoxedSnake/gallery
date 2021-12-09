@@ -16,6 +16,8 @@ class _RandomWordsState extends State<RandomWords> {
   final _biggerFont = const TextStyle(fontSize: 18.0);
   var bodytext = Text("Hello");
 
+
+
   // var
   void _home() {
     setState(() {
@@ -29,9 +31,10 @@ class _RandomWordsState extends State<RandomWords> {
     });
   }
 
-  void _yupper() {
-    bodytext = Text("slkjdlfjldsfjldsx  ");
-  }
+  var _loading_random_words(){
+    setState(() {
+      _buildSuggestions();
+    });  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class _RandomWordsState extends State<RandomWords> {
       appBar: AppBar(title: const Text('Galleryaa'), actions: [
         IconButton(
           icon: Icon(Icons.grid_view_outlined),
-          onPressed: _yupper,
+          onPressed: (){},
         ),
         IconButton(
           icon: Icon(Icons.sort_outlined),
@@ -66,17 +69,14 @@ class _RandomWordsState extends State<RandomWords> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(),
                       onPressed: _home,
                       tooltip: 'Shows local photos',
                       color: Colors.white,
                       icon: const Icon(Icons.home_outlined),
                     ),
-                    const Text(
-                      "Home",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
+                    const Text("Home", style: TextStyle(color: Colors.white, fontSize: 10),
                     )
                   ],
                 ),
@@ -84,17 +84,13 @@ class _RandomWordsState extends State<RandomWords> {
                   IconButton(
                     onPressed: _shared,
                     tooltip: 'Shows shared photos',
-
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
                     icon: const Icon(Icons.people_outlined),
                   ),
-                  const Text(
-                    "Shared",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
+                  const Text("Shared",style: TextStyle(color: Colors.white,fontSize: 10,),
                   )
-                ]
+                ],
                 )
               ],
             ),

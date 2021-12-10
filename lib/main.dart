@@ -13,28 +13,31 @@ class RandomWords extends StatefulWidget {
 
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  var bodytext = Text("Hello");
+  var _biggerFont =  TextStyle(fontSize: 18.0);
+  var bodytext  = Text("Hello");
 
 
 
   // var
   void _home() {
     setState(() {
+      _biggerFont = TextStyle(fontSize: 10.0);
       bodytext = Text("HomePage");
     });
   }
 
   void _shared() {
     setState(() {
+      _biggerFont = TextStyle(fontSize: 30.0);
+
       bodytext = Text("Shared");
     });
   }
-
-  var _loading_random_words(){
-    setState(() {
-      _buildSuggestions();
-    });  }
+  //
+  // var _loading_random_words(){
+  //   setState(() {
+  //     _buildSuggestions();
+  //   });  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +58,7 @@ class _RandomWordsState extends State<RandomWords> {
 
         // IconButton(onPressed: _expandLayout, icon: icon)
       ]),
-      body: bodytext,
+      body: _buildSuggestions(),
 
       bottomNavigationBar: BottomAppBar(
           shape: const CircularNotchedRectangle(),
@@ -69,7 +72,7 @@ class _RandomWordsState extends State<RandomWords> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      padding: EdgeInsets.zero,
+
                       constraints: BoxConstraints(),
                       onPressed: _home,
                       tooltip: 'Shows local photos',
@@ -103,15 +106,48 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
-  Widget _buildRow(WordPair pair) {
-    return ListTile(
-      title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-    );
-  } //buildrow
+  Widget _buildTile(WordPair pair) {
+    return Container(
+      //   child: ListTile(
+      //     title: Image.network('https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+      //     // title: Text(pair.asPascalCase,style: _biggerFont),
+      //     trailing:Column(
+      //       children: [
+      //         IconButton(
+      //           onPressed: (){},
+      //           icon: Icon(Icons.more_vert),
+      //         ),
+      //         IconButton(
+      //             onPressed: (){},
+      //             icon: Icon(CupertinoIcons.heart))
+      //       ],
+      //     )
+      //   ),
+      // );
+        width: 420,
+        height: 300,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage('https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+              fit: BoxFit.cover,)
+        ),
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: (){},
+              icon: Icon(Icons.more_vert),
+            ),
+            Spacer(),
+            IconButton(
+                onPressed: (){},
+                icon: Icon(CupertinoIcons.heart))
+          ],
+        )
 
+    );
+  }
   Widget _buildSuggestions() {
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
@@ -121,7 +157,7 @@ class _RandomWordsState extends State<RandomWords> {
         if (index >= _suggestions.length) {
           _suggestions.addAll(generateWordPairs().take(10));
         }
-        return _buildRow(_suggestions[index]);
+        return _buildTile(_suggestions[index]);
       },
     );
   } //buildsuggestion

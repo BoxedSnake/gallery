@@ -83,7 +83,9 @@ class _RandomWordsState extends State<RandomWords> {
                     )
                   ],
                 ),
-                Column(mainAxisSize: MainAxisSize.min, children: [
+                Stack(
+                  // mainAxisSize: MainAxisSize.min,
+                  children: [
                   IconButton(
                     onPressed: _shared,
                     tooltip: 'Shows shared photos',

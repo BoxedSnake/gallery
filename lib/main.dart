@@ -18,7 +18,7 @@ class _RandomWordsState extends State<RandomWords> {
 
 
 
-  // var
+
   void _home() {
     setState(() {
       _biggerFont = TextStyle(fontSize: 10.0);

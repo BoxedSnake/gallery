@@ -36,7 +36,8 @@ dependencies:
   google_fonts:
   photo_view:
   flutter_staggered_grid_view:
-  firebase_storage:
+  firebase_core: ^0.7.0
+  firebase_storage: ^0.16.0
   cloud_firestore: ^1.0.0
   firebase_auth: ^1.0.0
   provider: ^5.0.0

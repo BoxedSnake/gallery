@@ -18,31 +18,26 @@ class _RandomWordsState extends State<RandomWords> {
   bool viewtype = true;
   bool gridisthree = true;
 
-
-  void _toggleviewtype(){
+  void _toggleviewtype() {
     setState(() {
       if (viewtype) {
         viewtype = false;
-      }
-      else{
+      } else {
         viewtype = true;
       }
       // viewtype? false:true;
-
     });
   }
 
   void _home() {
     setState(() {
       _biggerFont = TextStyle(fontSize: 15.0);
-
     });
   }
 
   void _shared() {
     setState(() {
       _biggerFont = TextStyle(fontSize: 30.0);
-
     });
   }
   //
@@ -81,7 +76,6 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
-
   Widget _buildTile(WordPair pair) {
     return Container(
         //   child: ListTile(
@@ -104,10 +98,11 @@ class _RandomWordsState extends State<RandomWords> {
         height: 300,
         decoration: BoxDecoration(
             image: DecorationImage(
-          image: NetworkImage(
-              'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
-          fit: BoxFit.cover,
-        )),
+              image: NetworkImage(
+                  'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+              fit: BoxFit.cover,
+            )
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -119,135 +114,127 @@ class _RandomWordsState extends State<RandomWords> {
             Spacer(),
             IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart))
           ],
-        ));
+        )
+    );
   }
 
   Widget _buildList(WordPair pair) {
     bool isLiked = false;
-    Widget likedIcon(){
-      return isLiked? Icon(CupertinoIcons.heart):Icon(CupertinoIcons.heart_fill);
-    }
-    void toggleliked(){
+
+    Widget likedIcon() {
+      return isLiked? Icon(CupertinoIcons.heart_fill): Icon(CupertinoIcons.heart);}
+
+    void toggleliked() {
       setState(() {
         if (isLiked) {
           isLiked = false;
         }
-        else{
+        else {
           isLiked = true;
         }
-      }
+      });
+    };
+
+    return ListTile(
+        leading: IconButton(onPressed: () {}, icon: likedIcon()),
+        title: Text(
+          pair.asPascalCase,
+          style: _biggerFont,
+        ),
+        trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)
+            // Row(
+            // children:[
+            //   IconButton(
+            //     onPressed: () {},
+            //     icon: Icon(Icons.more_vert),
+            //   ),
+            //   IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart)
+            //   )
+            // ],
+            )
+    );
+  }
+
+  Widget _buildSuggestions(bool type) {
+    Widget gridview() {
+      return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: (context, i) {
+          if (i.isOdd) return const Divider();
+          final index = i ~/ 2;
+          if (index >= _suggestions.length) {
+            _suggestions.addAll(generateWordPairs().take(10));
+          }
+          return _buildTile(_suggestions[index]);
+          },
       );
     };
-    
 
+    Widget listview() {
+      return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: (context, i) {
+          if (i.isOdd) return const Divider();
+          final index = i ~/ 2;
+          if (index >= _suggestions.length) {
+            _suggestions.addAll(generateWordPairs().take(10));
+          }
+          return _buildList(_suggestions[index]);
+          },
+      );
+    };
 
+    return type ? gridview() : listview();
+  } //buildsuggestion
 
-        return ListTile(
-            leading: IconButton(onPressed: () {}, icon: likedIcon()),
-            title: Text(pair.asPascalCase,style: _biggerFont,),
-            trailing: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.more_vert)
-              // Row(
-              // children:[
-              //   IconButton(
-              //     onPressed: () {},
-              //     icon: Icon(Icons.more_vert),
-              //   ),
-              //   IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart)
-              //   )
-              // ],
-            )
-        );
-      }
-      }
-
-          Widget _buildSuggestions(bool type) {
-        Widget gridview() {
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemBuilder: (context, i) {
-              if (i.isOdd) return const Divider();
-              final index = i ~/ 2;
-              if (index >= _suggestions.length) {
-                _suggestions.addAll(generateWordPairs().take(10));
-              }
-              return _buildTile(_suggestions[index]);
-            },
-          );
-        };
-
-
-        Widget listview() {
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemBuilder: (context, i) {
-              if (i.isOdd) return const Divider();
-              final index = i ~/ 2;
-              if (index >= _suggestions.length) {
-                _suggestions.addAll(generateWordPairs().take(10));
-              }
-              return _buildList(_suggestions[index]);
-            },
-          );
-        };
-
-        return type? gridview():listview();
-
-      } //buildsuggestion
-
-
-      Widget _bottomNavBar() {
-        return BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            color: Colors.black,
-            child: IconTheme(
-              data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        constraints: BoxConstraints(),
-                        onPressed: _home,
-                        tooltip: 'Shows local photos',
-                        color: Colors.white,
-                        icon: const Icon(Icons.home_outlined),
-                      ),
-                      const Text(
-                        "Home",
-                        style: TextStyle(color: Colors.white, fontSize: 10),
-                      )
-                    ],
+  Widget _bottomNavBar() {
+    return BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        color: Colors.black,
+        child: IconTheme(
+          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    constraints: BoxConstraints(),
+                    onPressed: _home,
+                    tooltip: 'Shows local photos',
+                    color: Colors.white,
+                    icon: const Icon(Icons.home_outlined),
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: _shared,
-                        tooltip: 'Shows shared photos',
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                        icon: const Icon(Icons.people_outlined),
-                      ),
-                      const Text(
-                        "Shared",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                        ),
-                      )
-                    ],
+                  const Text(
+                    "Home",
+                    style: TextStyle(color: Colors.white, fontSize: 10),
                   )
                 ],
               ),
-            )
-        );
-      }
-    }
-
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    tooltip: 'Shows shared photos',
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    icon: const Icon(Icons.people_outlined),
+                  ),
+                  const Text(
+                    "Shared",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ));
+  }
 }
 
 class MyApp extends StatelessWidget {

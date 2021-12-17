@@ -15,7 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(AuthCheck());
 }
 
 //palceholder_______________________________________________________________
@@ -122,7 +122,8 @@ class _RandomWordsState extends State<RandomWords> {
       bottomNavigationBar: _bottomNavBar(),
 
       floatingActionButton: FloatingActionButton(
-          onPressed: () {}, child: Icon(Icons.add_a_photo_outlined)),
+          onPressed:f,
+          child: Icon(Icons.add_a_photo_outlined)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // _buildSuggestions(),
     );

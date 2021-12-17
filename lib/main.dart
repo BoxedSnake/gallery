@@ -2,8 +2,59 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutterfire_ui/auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
+}
+
+//palceholder_______________________________________________________________
+class AuthCheck extends StatelessWidget {
+  const AuthCheck({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: AuthGate(),);
+  }
+}
+class AuthGate extends StatelessWidget {
+  const AuthGate({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        // User is not signed in
+        if (!snapshot.hasData) {
+          return SignInScreen(
+            providerConfigs:[
+              EmailProviderConfiguration(),
+            ],
+          );
+        }
+        // Render your application if authenticated
+        return MyApp();
+      },
+    );
+  }
+}
+//palceholder_______________________________________________________________
+
+
+
+//palceholder_______________________________________________________________
 
 class RandomWords extends StatefulWidget {
   const RandomWords({Key? key}) : super(key: key);
@@ -143,15 +194,6 @@ class _RandomWordsState extends State<RandomWords> {
           style: _biggerFont,
         ),
         trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)
-            // Row(
-            // children:[
-            //   IconButton(
-            //     onPressed: () {},
-            //     icon: Icon(Icons.more_vert),
-            //   ),
-            //   IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart)
-            //   )
-            // ],
             )
     );
   }

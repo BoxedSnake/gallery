@@ -39,10 +39,20 @@ class AuthGate extends StatelessWidget {
         // User is not signed in
         if (!snapshot.hasData) {
           return SignInScreen(
-            providerConfigs:[
-              EmailProviderConfiguration(),
-            ],
-          );
+              providerConfigs:[
+                EmailProviderConfiguration(),
+              ],
+            );
+
+        // return Scaffold(
+        //     resizeToAvoidBottomInset: false,
+        //     body: SignInScreen(
+        //       providerConfigs:[
+        //         EmailProviderConfiguration(),
+        //       ],
+        //     ),
+        //   );
+
         }
         // Render your application if authenticated
         return MyApp();
@@ -65,20 +75,29 @@ class RandomWords extends StatefulWidget {
 // enum viewStyle{gridthree,gridfive,list};
 
 class _RandomWordsState extends State<RandomWords> {
+  //___________________________________________________________
   final _suggestions = <WordPair>[];
   var _biggerFont = TextStyle(fontSize: 18.0);
   bool viewtype = true;
   bool gridisthree = true;
 
+  // ______________________________________________________________
+
   void _toggleviewtype() {
     setState(() {
-      if (viewtype) {
-        viewtype = false;
-      } else {
-        viewtype = true;
-      }
+      viewtype = !viewtype;
       // viewtype? false:true;
     });
+  }
+
+  toggleliked(isLiked) {
+    setState(() {
+
+    });
+  }
+
+  Future<void> _signout() async{
+    await FirebaseAuth.instance.signOut();
   }
 
   void _home() {
@@ -122,7 +141,7 @@ class _RandomWordsState extends State<RandomWords> {
       bottomNavigationBar: _bottomNavBar(),
 
       floatingActionButton: FloatingActionButton(
-          onPressed:f,
+          onPressed:_signout,
           child: Icon(Icons.add_a_photo_outlined)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // _buildSuggestions(),
@@ -171,25 +190,22 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
+
+  Widget likedbutton({isliked = false}){
+  bool isLiked = false;
+
+
+
+  Widget heart() {
+    return isLiked? Icon(CupertinoIcons.heart_fill): Icon(CupertinoIcons.heart);
+  }
+  return IconButton(onPressed: (){}, icon: heart());
+}
+
   Widget _buildList(WordPair pair) {
-    bool isLiked = false;
-
-    Widget likedIcon() {
-      return isLiked? Icon(CupertinoIcons.heart_fill): Icon(CupertinoIcons.heart);}
-
-    void toggleliked() {
-      setState(() {
-        if (isLiked) {
-          isLiked = false;
-        }
-        else {
-          isLiked = true;
-        }
-      });
-    };
 
     return ListTile(
-        leading: IconButton(onPressed: () {}, icon: likedIcon()),
+        leading: likedbutton(),
         title: Text(
           pair.asPascalCase,
           style: _biggerFont,
@@ -200,6 +216,7 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildSuggestions(bool type) {
+
     Widget gridview() {
       return ListView.builder(
         padding: const EdgeInsets.all(16.0),

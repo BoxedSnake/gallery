@@ -5,31 +5,36 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:gallery/main.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(MyApp());
-}
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+//   );
+//   runApp(Login());
+// }
 
 
 
 //palceholder_______________________________________________________________
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Login extends StatelessWidget {
+  const Login({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: AuthGate(),);
+    return const MaterialApp(
+      home: AuthGate(),);
   }
 }
 
 //palceholder_______________________________________________________________
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({Key? key}) : super(key: key);
 
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -37,11 +42,20 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         // User is not signed in
         if (!snapshot.hasData) {
-          return SignInScreen(
+          return const SignInScreen(
             providerConfigs:[
               EmailProviderConfiguration(),
             ],
           );
+
+          // return Scaffold(
+          //     resizeToAvoidBottomInset: false,
+          //     body: SignInScreen(
+          //       providerConfigs:[
+          //         EmailProviderConfiguration(),
+          //       ],
+          //     ),
+          //   );
         }
         // Render your application if authenticated
         return MyApp();

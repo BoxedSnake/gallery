@@ -1,4 +1,6 @@
 
+import 'package:english_words/english_words.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/main.dart';
 
@@ -13,6 +15,73 @@ class _ImageDisplayState extends State<ImageDisplay> {
   final _suggestions = <>[];
 
   bool type=false;
+  Widget _buildTile(WordPair pair) {
+    return Container(
+      //   child: ListTile(
+      //     title: Image.network('https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+      //     // title: Text(pair.asPascalCase,style: _biggerFont),
+      //     trailing:Column(
+      //       children: [
+      //         IconButton(
+      //           onPressed: (){},
+      //           icon: Icon(Icons.more_vert),
+      //         ),
+      //         IconButton(
+      //             onPressed: (){},
+      //             icon: Icon(CupertinoIcons.heart))
+      //       ],
+      //     )
+      //   ),
+      // );
+        width: 420,
+        height: 300,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                  'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+              fit: BoxFit.cover,
+            )
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.more_vert),
+            ),
+            Spacer(),
+            IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart))
+          ],
+        )
+    );
+  }
+
+
+  Widget likedbutton({isliked = false}){
+    bool isLiked = false;
+
+
+
+    Widget heart() {
+      return isLiked? Icon(CupertinoIcons.heart_fill): Icon(CupertinoIcons.heart);
+    }
+    return IconButton(onPressed: (){}, icon: heart());
+  }
+
+  Widget _buildList(WordPair pair) {
+
+    return ListTile(
+        leading: likedbutton(),
+        title: Text(
+          pair.asPascalCase,
+          // style: ,
+        ),
+        trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)
+        )
+    );
+  }
+
   Widget _buildSuggestions(bool type) {
 
     Widget gridview() {

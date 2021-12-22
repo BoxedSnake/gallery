@@ -16,6 +16,7 @@ import 'view/view.dart';
 
 
 
+
 Future<void>  main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Startup Name Generator',
       home: RandomWords(),
+      // home: RandomWords(),
     );
   }
 }

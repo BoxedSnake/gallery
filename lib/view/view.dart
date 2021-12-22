@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/imageDisplay.dart';
+import 'package:gallery/view/imagePickerView.dart';
+import 'package:gallery/test/test.dart';
+
 
 class RandomWords extends StatefulWidget {
   const RandomWords({Key? key}) : super(key: key);
@@ -16,14 +19,10 @@ class RandomWords extends StatefulWidget {
 // enum viewStyle{gridthree,gridfive,list};
 enum ImageViews { gridThree, gridFive, list }
 
-enum ImageMenu {
-  Share,
-  Rename,
-  Remove
-}
+enum ImageMenu { Share, Rename, Remove }
 
 class gridViewProp {
-  bool viewtype = true;
+  bool listView = false;
   bool gridisthree = true;
 }
 
@@ -32,7 +31,7 @@ class _RandomWordsState extends State<RandomWords> {
   //___________________________________________________________
   var suggestions = <WordPair>[];
   var biggerFont = TextStyle(fontSize: 18.0);
-  var viewSetting = new gridViewProp();
+  var VS = new gridViewProp();
   //
   // bool viewtype = true;
   // bool gridisthree = true;
@@ -41,16 +40,26 @@ class _RandomWordsState extends State<RandomWords> {
 
   void _toggleviewtype() {
     setState(() {
-      if(!viewSetting.gridisthree){
-        viewSetting.viewtype = !viewSetting.viewtype;
+      // grid three
+      if (!VS.listView && VS.gridisthree) {
+        // VS.listView=!VS.listView;
+        VS.gridisthree = false;
+        print(VS.gridisthree);
+        print(VS.listView);
       }
-      else if(viewSetting.gridisthree){
-        viewSetting.gridisthree = !viewSetting.gridisthree;
+      //grid five
+      else if (!VS.listView && !VS.gridisthree) {
+        VS.gridisthree = true;
+        VS.listView = true;
+        print(VS.gridisthree);
+        print(VS.listView);
       }
-      else{
-        viewSetting.gridisthree = !viewSetting.gridisthree;
-        viewSetting.viewtype = !viewSetting.viewtype;
-
+      //list
+      else if (VS.listView && VS.gridisthree) {
+        VS.gridisthree = true;
+        VS.listView = false;
+        print(VS.gridisthree);
+        print(VS.listView);
       }
     });
   }
@@ -79,7 +88,12 @@ class _RandomWordsState extends State<RandomWords> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Gallery'), actions: [
+      appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.logout_outlined),
+            onPressed: _signout,
+          ),
+          title: const Text('Gallery'), actions: [
         IconButton(
           icon: Icon(Icons.grid_view_outlined),
           onPressed: _toggleviewtype,
@@ -96,17 +110,22 @@ class _RandomWordsState extends State<RandomWords> {
         // IconButton(onPressed: _expandLayout, icon: icon)
       ]),
       extendBody: true,
-      body: buildSuggestions(viewSetting.viewtype, viewSetting.gridisthree, suggestions),
+      body: buildSuggestions(VS.listView, VS.gridisthree, suggestions),
+      // body: buildSuggestions(viewSetting.viewtype, viewSetting.gridisthree, suggestions),
 
       bottomNavigationBar: _bottomNavBar(),
-
       floatingActionButton: FloatingActionButton(
-          onPressed: _signout, child: Icon(Icons.add_a_photo_outlined)),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyPage()),
+            );
+          },
+          child: Icon(Icons.add_a_photo_outlined)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // _buildSuggestions(),
     );
   }
-
 
   Widget _bottomNavBar() {
     return BottomAppBar(

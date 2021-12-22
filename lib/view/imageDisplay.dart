@@ -8,11 +8,8 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/view.dart';
 
-Widget _buildTile(WordPair pair) {
+Widget _buildTile() {
   return Container(
-
-      width: 420,
-      height: 300,
       decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
@@ -54,32 +51,43 @@ Widget _buildList(WordPair pair) {
       trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)));
 }
 
-Widget buildSuggestions(bool type, bool quantity, suggestions) {
-  int gridNum(quantity){
-    return quantity? 3:5;
-  };
-
-
+Widget buildSuggestions(bool type, bool quantity,  suggestions) {
 
   Widget gridview() {
+
+    int boolcheck(bool quantity){
+      int num = 3;
+      setState(){
+        if (quantity) {
+          num= 3;
+        }
+        else{
+          num = 5;
+        }
+      }
+      return num;
+    }
     return GridView.count(
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: gridNum(quantity),
-        children: suggestions
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      crossAxisCount: boolcheck(quantity),
+      children: [
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+      ],
     );
 
-    //     .builder(
-    //   padding: const EdgeInsets.all(16.0),
-    //   itemBuilder: (context, i) {
-    //     if (i.isOdd) return const Divider();
-    //     final index = i ~/ 2;
-    //     if (index >= suggestions.length) {
-    //       suggestions.addAll(generateWordPairs().take(10));
-    //     }
-    //     return _buildTile(suggestions[index]);
-    //   },
-    // );
   }
 
   ;
@@ -100,5 +108,5 @@ Widget buildSuggestions(bool type, bool quantity, suggestions) {
 
   ;
 
-  return type ? gridview() : listview();
+  return type ? listview():gridview();
 } //buildsuggestion

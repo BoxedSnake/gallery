@@ -35,6 +35,8 @@ dependencies:
   http:
   google_fonts:
   photo_view:
+  image_picker:
+
   flutter_staggered_grid_view:
   firebase_core:
   firebase_storage:
@@ -42,7 +44,6 @@ dependencies:
   cloud_firestore:
   cloud_functions:
   provider:
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -52,6 +53,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  image_picker:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

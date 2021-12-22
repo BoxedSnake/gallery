@@ -12,7 +12,7 @@ class ImageDisplay extends StatefulWidget {
 }
 
 class _ImageDisplayState extends State<ImageDisplay> {
-  final _suggestions = <>[];
+  final _suggestions = <WordPair>[];
 
   bool type=false;
   Widget _buildTile(WordPair pair) {

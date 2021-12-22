@@ -1,14 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:async';
 
 class MyPage extends StatefulWidget {
+
   @override
+
   _MyPageState createState() => _MyPageState();
 }
 class _MyPageState extends State<MyPage> {
   /// Variables
-   File imageFile = ;
+  Null imageFile = null;
 
   /// Widget
   @override

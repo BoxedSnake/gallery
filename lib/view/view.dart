@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery/controller/imagePickerController.dart';
 import 'package:gallery/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/imageDisplay.dart';
-import 'package:gallery/view/imagePickerView.dart';
-import 'package:gallery/test/test.dart';
+import 'package:gallery/controller/imagePickerController.dart';
 
 
 class RandomWords extends StatefulWidget {
@@ -118,7 +118,7 @@ class _RandomWordsState extends State<RandomWords> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyPage()),
+              MaterialPageRoute(builder: (context) => imagePicker()),
             );
           },
           child: Icon(Icons.add_a_photo_outlined)),

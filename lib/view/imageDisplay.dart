@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/main.dart';
@@ -12,16 +10,16 @@ Widget _buildTile() {
   return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-                'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
-            fit: BoxFit.cover,
-          )),
+        image: NetworkImage(
+            'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+        fit: BoxFit.cover,
+      )),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           IconButton(
-            onPressed: (){},
+            onPressed: () {},
             icon: Icon(Icons.more_vert),
           ),
           Spacer(),
@@ -51,27 +49,26 @@ Widget _buildList(WordPair pair) {
       trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)));
 }
 
-Widget buildSuggestions(bool type, bool quantity,  suggestions) {
-
+Widget buildSuggestions(bool type, bool quantity, suggestions) {
   Widget gridview() {
-
-    int boolcheck(bool quantity){
-      int num = 3;
-      setState(){
-        if (quantity) {
-          num= 3;
-        }
-        else{
-          num = 5;
-        }
-      }
-      return num;
-    }
     return GridView.count(
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      crossAxisCount: boolcheck(quantity),
+      crossAxisCount: (quantity) ? 3 : 5,
       children: [
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
+        _buildTile(),
         _buildTile(),
         _buildTile(),
         _buildTile(),
@@ -87,7 +84,6 @@ Widget buildSuggestions(bool type, bool quantity,  suggestions) {
         _buildTile(),
       ],
     );
-
   }
 
   ;
@@ -101,12 +97,13 @@ Widget buildSuggestions(bool type, bool quantity,  suggestions) {
         if (index >= suggestions.length) {
           suggestions.addAll(generateWordPairs().take(10));
         }
-        return _buildList(suggestions[index]);
+
+          return _buildList(suggestions[index]);
       },
     );
   }
 
   ;
 
-  return type ? listview():gridview();
+  return type ? listview() : gridview();
 } //buildsuggestion

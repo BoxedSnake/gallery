@@ -95,8 +95,19 @@ class _imagePickerState extends State<imagePicker> {
                   onPressed: (){
                     _showChoiceDialog(context);
                     },
-                  child: ( imageFile==null)?const Text("Select Image"):const Text("Replace Image",),
+                  child: (imageFile==null)?const Text("Select Image"):const Text("Replace Image",),
+                ),
+                (imageFile!=null)
+                    ?
+                MaterialButton(
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  onPressed: (){},
+                  child: const Text("upload"),
                 )
+                    :
+                Text(""),
+                    
               ],
             ),
           ),

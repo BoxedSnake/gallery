@@ -27,14 +27,49 @@ class _imagePickerState extends State<imagePicker> {
 
   void _openGallery(BuildContext context) async{
     final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery ,
+      source: ImageSource.gallery,
+
     );
     setState(() {
       imageFile = pickedFile;
+
     });
 
     Navigator.pop(context);
   }
+
+  void _openUrl(BuildContext context) async{
+    final pickedFile = await UrlImage();
+    // ImagePicker().pickImage(
+    //   source: ImageSource.camera,);
+
+    // setState(() {
+    //   imageFile = pickedFile;
+    // });
+
+    // Navigator.pop(context);
+  }
+
+  Widget UrlImage(){
+
+    return Image.network(
+        'https://flutter.github.io/assets-for-api-docs/assets/widgets/falcon.jpg',
+        loadingBuilder: (BuildContext context, Widget child,ImageChunkEvent? loadingProgress)
+        {
+          if (loadingProgress == null) {
+            return child;
+          }
+          return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ?
+                loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                    :
+                null,)
+          );
+        });
+  }
+
 
 
 
@@ -62,6 +97,14 @@ class _imagePickerState extends State<imagePicker> {
                 },
                 title: Text("Camera"),
                 leading: Icon(Icons.camera,color: Colors.blue,),
+              ),
+              Divider(height: 1,color: Colors.blue,),
+              ListTile(
+                onTap: (){
+                  _openUrl(context);
+                },
+                title: Text("URL - In Progress"),
+                leading: Icon(Icons.link,color: Colors.blue,),
               ),
             ],
           ),
@@ -107,7 +150,7 @@ class _imagePickerState extends State<imagePicker> {
                 )
                     :
                 Text(""),
-                    
+
               ],
             ),
           ),

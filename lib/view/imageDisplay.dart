@@ -6,15 +6,17 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/view.dart';
 
-Widget _buildTile() {
+
+
+Widget _buildTile(bool enabled) {
   return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-        image: NetworkImage(
-            'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
-        fit: BoxFit.cover,
-      )),
-      child: Column(
+            image: NetworkImage(
+                'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+            fit: BoxFit.cover,
+          )),
+      child:(enabled)? Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -25,7 +27,10 @@ Widget _buildTile() {
           Spacer(),
           IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart))
         ],
-      ));
+      )
+          :
+          Container()
+  );
 }
 
 Widget likedbutton({isliked = false}) {
@@ -49,39 +54,27 @@ Widget _buildList(WordPair pair) {
       trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)));
 }
 
-Widget buildSuggestions(bool type, bool quantity, suggestions) {
+Widget buildSuggestions(bool type, bool quantity, bool enabledImage, suggestions) {
   Widget gridview() {
     return GridView.count(
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
       crossAxisCount: (quantity) ? 3 : 5,
       children: [
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
-        _buildTile(),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
+        _buildTile(enabledImage),
       ],
     );
   }

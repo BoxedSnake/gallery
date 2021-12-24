@@ -1,82 +1,36 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:async';
 
-class MyPage extends StatefulWidget {
+// Import the firebase_core and cloud_firestore plugin
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  @override
+class AddImage extends StatelessWidget {
+  final String ImageName;
+  final String ImageUrl;
+  AddImage(this.ImageName, this.ImageUrl,);
 
-  _MyPageState createState() => _MyPageState();
-}
-class _MyPageState extends State<MyPage> {
-  /// Variables
-  Null imageFile = null;
-
-  /// Widget
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Image Picker"),
-        ),
-        body: Container(
-            child: imageFile == null
-                ? Container(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      _getFromGallery();
-                    },
-                    child: Text("PICK FROM GALLERY"),
-                  ),
-                  Container(
-                    height: 40.0,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _getFromCamera();
-                    },
-                    child: Text("PICK FROM CAMERA"),
-                  )
-                ],
-              ),
-            ): Container(
-              child: Image.file(
-                imageFile,
-                fit: BoxFit.cover,
-              ),
-            )));
-  }
+    // Create a CollectionReference called users that references the firestore collection
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-  /// Get from gallery
-  _getFromGallery() async {
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
+    Future<void> addUser() {
+      // Call the user's CollectionReference to add a new user
+      return users
+          .add({
+        'full_name': fullName, // John Doe
+        'company': company, // Stokes and Sons
+        'age': age // 42
+      })
+          .then((value) => print("User Added"))
+          .catchError((error) => print("Failed to add user: $error"));
+    }
+
+    return TextButton(
+      onPressed: addUser,
+      child: Text(
+        "Add User",
+      ),
     );
-    if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-      });
-    }
-  }
-
-  /// Get from Camera
-  _getFromCamera() async {
-    PickedFile pickedFile = (await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    )) as PickedFile;
-    if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-      });
-    }
   }
 }

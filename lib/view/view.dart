@@ -24,6 +24,7 @@ enum ImageMenu { Share, Rename, Remove }
 class gridViewProp {
   bool listView = false;
   bool gridisthree = true;
+  bool imageButtonEnabled = true;
 }
 
 
@@ -61,6 +62,12 @@ class _RandomWordsState extends State<RandomWords> {
         print(VS.gridisthree);
         print(VS.listView);
       }
+    });
+  }
+
+  toggleLocked(){
+    setState(() {
+      VS.imageButtonEnabled = !VS.imageButtonEnabled;
     });
   }
 
@@ -104,13 +111,13 @@ class _RandomWordsState extends State<RandomWords> {
         ),
         IconButton(
           icon: Icon(Icons.lock_outlined),
-          onPressed: () {},
+          onPressed: toggleLocked,
         ),
 
         // IconButton(onPressed: _expandLayout, icon: icon)
       ]),
       extendBody: true,
-      body: buildSuggestions(VS.listView, VS.gridisthree, suggestions),
+      body: buildSuggestions(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
       // body: buildSuggestions(viewSetting.viewtype, viewSetting.gridisthree, suggestions),
 
       bottomNavigationBar: _bottomNavBar(),

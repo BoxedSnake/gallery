@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'dart:io';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_core/firebase_core.dart';
 
 class imagePicker extends StatefulWidget {
   const imagePicker({Key? key}) : super(key: key);
@@ -50,6 +52,7 @@ class _imagePickerState extends State<imagePicker> {
     // Navigator.pop(context);
   }
 
+// widget to launch image and loard from url
   Widget UrlImage(){
 
     return Image.network(
@@ -70,7 +73,22 @@ class _imagePickerState extends State<imagePicker> {
         });
   }
 
+  Future<void> uploadFile() async {
+    File file = File(imageFile!.path.toString());
+    String name = imageFile!.name.toString();
 
+    try {
+      await firebase_storage.FirebaseStorage.instance
+          .ref('Images/$name')
+          .putFile(file);
+    } on  firebase_storage.FirebaseException catch (e) {
+      // e.g, e.code == 'canceled'
+    }
+  }
+
+void Saveimage(){
+
+}
 
 
   Future<void>_showChoiceDialog(BuildContext context){
@@ -145,11 +163,11 @@ class _imagePickerState extends State<imagePicker> {
                 MaterialButton(
                   textColor: Colors.white,
                   color: Colors.blue,
-                  onPressed: (){},
+                  onPressed: uploadFile,
                   child: const Text("upload"),
                 )
                     :
-                Text(""),
+                Container(),
 
               ],
             ),

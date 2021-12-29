@@ -190,22 +190,21 @@ class _imagePickerState extends State<imagePicker> {
                 (imageFile!=null)
                     ?
                 Column(
-                  children: [
-                    //TODO: link form to current image.
-                //     Form(
-                //
-                //   decoration: InputDecoration(
-                //     border: OutlineInputBorder(),
-                //     hintText: 'FileName',
-                //   ),
-                // ),
-                MaterialButton(
-                  textColor: Colors.white,
-                  color: Colors.blue,
-                  onPressed: uploadSelectedImage,
-                  child: const Text("Upload Picture"),
-                )
-                  ]
+                    children: [
+                      //TODO: link form to current image.
+                      // Form(
+                      //   decoration: InputDecoration(
+                      //     border: OutlineInputBorder(),
+                      //     hintText: 'FileName',
+                      //   ),
+                      // ),
+                      MaterialButton(
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed: uploadSelectedImage,
+                        child: const Text("Upload Picture"),
+                      )
+                    ]
                 )
                     :
                 Container(),

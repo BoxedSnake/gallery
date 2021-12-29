@@ -8,7 +8,7 @@ import 'package:gallery/view/view.dart';
 
 
 
-Widget _buildTile(bool enabled) {
+Widget _buildTile(bool interfaceButtons, ) {
   return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -16,7 +16,7 @@ Widget _buildTile(bool enabled) {
                 'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
             fit: BoxFit.cover,
           )),
-      child:(enabled)? Column(
+      child:(interfaceButtons)? Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [

@@ -11,7 +11,7 @@ String getUserId() {
 }
 
 
-class Image (String imageURL, ){
+class pulledImage (String imageURL, ){
   String imageURL = "null";
   String imageName = "null";
   String Uploader = getUserId();

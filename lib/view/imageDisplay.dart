@@ -6,97 +6,134 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/view.dart';
 
+class imageDisplay extends StatefulWidget {
+  const imageDisplay({Key? key}) : super(key: key);
 
 
-Widget _buildTile(bool interfaceButtons, ) {
-  return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-                'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
-            fit: BoxFit.cover,
-          )),
-      child:(interfaceButtons)? Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.more_vert),
-          ),
-          Spacer(),
-          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart))
-        ],
-      )
-          :
-          Container()
-  );
+  @override
+  _imageDisplayState createState() => _imageDisplayState();
 }
 
-Widget likedbutton({isliked = false}) {
-  bool isLiked = false;
 
-  Widget heart() {
-    return isLiked
-        ? Icon(CupertinoIcons.heart_fill)
-        : Icon(CupertinoIcons.heart);
+class _imageDisplayState extends State<imageDisplay> {
+
+
+  bool get enabledImage => false;
+
+  bool get quantity => false;
+
+  bool get type => false;
+  List<List<String>> imageList = [];
+
+
+  togglebool(bool isLiked) {
+    setState(() {
+      isLiked = !isLiked;
+    });
   }
 
-  return IconButton(onPressed: () {}, icon: heart());
-}
 
-Widget _buildList(WordPair pair) {
-  return ListTile(
-      leading: likedbutton(),
-      title: Text(
-        pair.asPascalCase,
-      ),
-      trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)));
-}
+  Widget _buildTile(bool interfaceButtons,) {
+    bool isLiked = false;
 
-Widget buildSuggestions(bool type, bool quantity, bool enabledImage, suggestions) {
-  Widget gridview() {
-    return GridView.count(
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      crossAxisCount: (quantity) ? 3 : 5,
-      children: [
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-        _buildTile(enabledImage),
-      ],
+    return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                  'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
+              fit: BoxFit.cover,
+            )),
+        child: (interfaceButtons) ? Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.more_vert),
+            ),
+            Spacer(),
+
+            IconButton(
+              onPressed: togglebool(isLiked),
+              icon: (isLiked) ? Icon(CupertinoIcons.heart_fill) : Icon(
+                  CupertinoIcons.heart),
+            )
+
+          ],
+        )
+            :
+        Container()
     );
   }
 
-  ;
 
-  Widget listview() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemBuilder: (context, i) {
-        if (i.isOdd) return const Divider();
-        final index = i ~/ 2;
-        if (index >= suggestions.length) {
-          suggestions.addAll(generateWordPairs().take(10));
-        }
+  Widget _buildList(WordPair pair) {
+    bool isLiked = false;
+
+    return ListTile(
+        leading: IconButton(
+          onPressed: togglebool(isLiked),
+          icon: (isLiked) ? Icon(CupertinoIcons.heart_fill) : Icon(
+              CupertinoIcons.heart),
+        ),
+        title: Text(
+          pair.asPascalCase,
+        ),
+        trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)));
+  }
+
+  Widget buildSuggestions(bool type, bool quantity, bool enabledImage,
+      suggestions) {
+    Widget gridview() {
+      return GridView.count(
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        crossAxisCount: (quantity) ? 3 : 5,
+        children: [
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+          _buildTile(enabledImage),
+        ],
+      );
+    }
+
+    ;
+
+    Widget listview() {
+      return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: (context, i) {
+          if (i.isOdd) return const Divider();
+          final index = i ~/ 2;
+          if (index >= suggestions.length) {
+            suggestions.addAll(generateWordPairs().take(10));
+          }
 
           return _buildList(suggestions[index]);
-      },
-    );
+        },
+      );
+    }
+
+    ;
+
+    return type ? listview() : gridview();
+  } //buildsuggestion
+
+  @override
+  Widget build(BuildContext context) {
+    return buildSuggestions(type, quantity, enabledImage, imageList);
   }
 
-  ;
 
-  return type ? listview() : gridview();
-} //buildsuggestion
+}

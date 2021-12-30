@@ -99,6 +99,7 @@ class _imagePickerState extends State<imagePicker> {
 
     );
 
+
      //firebase_storage.SettableMetadata fullMetadata = firebase_storage.FullMetadata as firebase_storage.SettableMetadata;
 
     try {
@@ -185,7 +186,9 @@ class _imagePickerState extends State<imagePicker> {
                   color: Colors.blue,
                   onPressed: (){
                     _showChoiceDialog(context);},
-                  child: (imageFile==null)?const Text("Select Image"):const Text("Replace Image",),
+                  child: (imageFile==null)
+                      ? const Text("Select Image")
+                      : const Text("Replace Image",),
                 ),
                 (imageFile!=null)
                     ?

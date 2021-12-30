@@ -38,12 +38,11 @@ class _RandomWordsState extends State<RandomWords> {
   // bool gridisthree = true;
 
   // ______________________________________________________________
-
+  /// allow for the view modifications - completed
   void _toggleviewtype() {
     setState(() {
       // grid three
       if (!VS.listView && VS.gridisthree) {
-        // VS.listView=!VS.listView;
         VS.gridisthree = false;
         print(VS.gridisthree);
         print(VS.listView);
@@ -65,15 +64,14 @@ class _RandomWordsState extends State<RandomWords> {
     });
   }
 
+
   toggleLocked(){
     setState(() {
       VS.imageButtonEnabled = !VS.imageButtonEnabled;
     });
   }
 
-  toggleliked(isLiked) {
-    setState(() {});
-  }
+
 
   Future<void> _signout() async {
     await FirebaseAuth.instance.signOut();
@@ -117,7 +115,7 @@ class _RandomWordsState extends State<RandomWords> {
         // IconButton(onPressed: _expandLayout, icon: icon)
       ]),
       extendBody: true,
-      body: buildSuggestions(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
+      body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
       // body: buildSuggestions(viewSetting.viewtype, viewSetting.gridisthree, suggestions),
 
       bottomNavigationBar: _bottomNavBar(),

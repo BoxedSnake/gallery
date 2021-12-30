@@ -19,7 +19,6 @@ class RandomWords extends StatefulWidget {
 // enum viewStyle{gridthree,gridfive,list};
 enum ImageViews { gridThree, gridFive, list }
 
-enum ImageMenu { Share, Rename, Remove }
 
 class gridViewProp {
   bool listView = false;
@@ -115,8 +114,8 @@ class _RandomWordsState extends State<RandomWords> {
         // IconButton(onPressed: _expandLayout, icon: icon)
       ]),
       extendBody: true,
-      body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
-      // body: buildSuggestions(viewSetting.viewtype, viewSetting.gridisthree, suggestions),
+      // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
+      body: buildSuggestions(VS.listView, VS.gridisthree,VS.imageButtonEnabled, suggestions),
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(

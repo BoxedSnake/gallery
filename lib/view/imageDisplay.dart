@@ -6,17 +6,18 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/view.dart';
 
-class imageDisplay extends StatefulWidget {
-  const imageDisplay({Key? key}) : super(key: key);
+// class imageDisplay extends StatefulWidget {
+//   const imageDisplay({Key? key}) : super(key: key);
+//
+//
+//   @override
+//   _imageDisplayState createState() => _imageDisplayState();
+// }
+//
+//
+// class _imageDisplayState extends State<imageDisplay> {
 
-
-  @override
-  _imageDisplayState createState() => _imageDisplayState();
-}
-
-
-class _imageDisplayState extends State<imageDisplay> {
-
+enum ImageMenu { Share, Rename, Remove }
 
   bool get enabledImage => false;
 
@@ -26,13 +27,36 @@ class _imageDisplayState extends State<imageDisplay> {
   List<List<String>> imageList = [];
 
 
-  togglebool(bool isLiked) {
-    setState(() {
-      isLiked = !isLiked;
-    });
-  }
+// togglebool(bool isLiked) {
+//   setState(() {
+//     isLiked = !isLiked;
+//   });
+// }
 
+Widget moreoptions() {
+  return PopupMenuButton<ImageMenu>(
+    onSelected: (ImageMenu){},
+    icon: const Icon(Icons.more_vert),
+    itemBuilder: (BuildContext context) {
+      return [
+        const PopupMenuItem(
+          value: ImageMenu.Share,
+          child: Text("Share"),
+        ),
+        const PopupMenuItem(
+          value: ImageMenu.Rename,
+          child: Text("Rename"),
+        ),
+        const PopupMenuItem(
+          value: ImageMenu.Remove,
+          child: Text("Remove"),
+        ),
 
+      ];
+    },
+  );
+
+}
   Widget _buildTile(bool interfaceButtons,) {
     bool isLiked = false;
 
@@ -47,14 +71,12 @@ class _imageDisplayState extends State<imageDisplay> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.more_vert),
-            ),
+            moreoptions(),
             Spacer(),
 
             IconButton(
-              onPressed: togglebool(isLiked),
+              onPressed:(){isLiked = !isLiked;},
+              // onPressed: togglebool(isLiked),
               icon: (isLiked) ? Icon(CupertinoIcons.heart_fill) : Icon(
                   CupertinoIcons.heart),
             )
@@ -72,7 +94,8 @@ class _imageDisplayState extends State<imageDisplay> {
 
     return ListTile(
         leading: IconButton(
-          onPressed: togglebool(isLiked),
+          onPressed:(){isLiked = !isLiked;},
+          // onPressed: togglebool(isLiked),
           icon: (isLiked) ? Icon(CupertinoIcons.heart_fill) : Icon(
               CupertinoIcons.heart),
         ),
@@ -136,4 +159,4 @@ class _imageDisplayState extends State<imageDisplay> {
   }
 
 
-}
+// }

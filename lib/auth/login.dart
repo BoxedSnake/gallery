@@ -33,10 +33,12 @@ class _AuthGateState extends State<AuthGate> {
       builder: (context, snapshot) {
         // User is not signed in
         if (!snapshot.hasData) {
-          return const SignInScreen(
-            providerConfigs:[
-              EmailProviderConfiguration(),
-            ],
+          return Padding(
+            child: const SignInScreen(
+              providerConfigs:[
+                EmailProviderConfiguration(),
+              ],
+            ),
           );
 
           // return Scaffold(

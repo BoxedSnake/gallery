@@ -94,7 +94,7 @@ class _imagePickerState extends State<imagePicker> {
         'Saved' : 'false',
         'Shared to Users' : ' ',
       },
-
+// do the addto firebase
     );
 
 

@@ -86,9 +86,6 @@ class _imagePickerState extends State<imagePicker> {
     File file = File(imageFile!.path.toString());
     String userId = auth.currentUser!.uid;
     String storedInDBName = userId.toString()+DateTime.now().toIso8601String();
-
-
-
     firebase_storage.SettableMetadata metadata = firebase_storage.SettableMetadata(
       cacheControl: 'max-age=60',
       customMetadata: <String, String>{
@@ -101,12 +98,52 @@ class _imagePickerState extends State<imagePicker> {
     );
 
 
-     //firebase_storage.SettableMetadata fullMetadata = firebase_storage.FullMetadata as firebase_storage.SettableMetadata;
+    final filepath = 'Images/$userId/$storedInDBName';
+
+
+    final uploadTask = firebase_storage.FirebaseStorage.instance.ref(filepath).putFile(file, metadata);
+    // firebase_storage.TaskSnapshot imageUploadInProgress = await uploadTask(() => Navigator.pop(context));
+
+    firebase_storage.TaskSnapshot imageUploadComplete = await uploadTask.whenComplete(() => Navigator.pop(context));
+
+    Widget uploadingImage(){
+      return AlertDialog(
+        title: Text("Uploading"),
+        content: Column(
+          children: [
+
+          ],
+        ),
+      );
+    }
+
+    //
+    // firebase_storage.FirebaseStorage
+    // final firebase_storage.FirebaseStorage firebaseStorageRef = FirebaseStorage.instance
+    //     .ref()
+    //     .child('$path/${userID}_${timeStamp}_${number}_${tag}.jpg');
+    // StorageUploadTask uploadTask =
+    // firebaseStorageRef.putFile(image);
+    // StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
+    // var downloadUrl = await storageSnapshot.ref.getDownloadURL();
+    // if (uploadTask.isComplete) {
+    //   final String url = downloadUrl.toString();
+    //   print(url);
+    //   //Success! Upload is complete
+    // } else {
+    //   //Error uploading file
+    // }
+
+
+    //firebase_storage.SettableMetadata fullMetadata = firebase_storage.FullMetadata as firebase_storage.SettableMetadata;
 
     try {
-      await firebase_storage.FirebaseStorage.instance
-          .ref('Images/$userId/$storedInDBName')
-          .putFile(file, metadata);
+      // await firebase_storage.FirebaseStorage.instance
+      //     .ref('Images/$userId/$storedInDBName')
+      //     .putFile(file, metadata);
+      uploadTask;
+      imageUploadComplete;
+
     } on  firebase_storage.FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
       print("#"*100);
@@ -114,7 +151,6 @@ class _imagePickerState extends State<imagePicker> {
       print("$e");
       print("#"*100);
     }
-
     finally{
 
     }
@@ -147,15 +183,15 @@ class _imagePickerState extends State<imagePicker> {
                 title: Text("Camera"),
                 leading: Icon(Icons.camera,color: Colors.blue,),
               ),
-              Divider(height: 1,color: Colors.blue,),
-              ListTile(
-                //TODO determine needs for upload via url image
-                onTap: (){
-                  _openUrl(context);
-                },
-                title: Text("URL - In Progress"),
-                leading: Icon(Icons.link,color: Colors.blue,),
-              ),
+              // Divider(height: 1,color: Colors.blue,),
+              // ListTile(
+              //   //TODO determine needs for upload via url image
+              //   onTap: (){
+              //     _openUrl(context);
+              //   },
+              //   title: Text("URL - In Progress"),
+              //   leading: Icon(Icons.link,color: Colors.blue,),
+              // ),
             ],
           ),
         ),

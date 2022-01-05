@@ -16,9 +16,6 @@ class RandomWords extends StatefulWidget {
   _RandomWordsState createState() => _RandomWordsState();
 }
 
-// enum viewStyle{gridthree,gridfive,list};
-enum ImageViews { gridThree, gridFive, list }
-
 
 class gridViewProp {
   bool listView = false;

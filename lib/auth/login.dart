@@ -34,6 +34,7 @@ class _AuthGateState extends State<AuthGate> {
         // User is not signed in
         if (!snapshot.hasData) {
           return Padding(
+            padding: EdgeInsets.all(0),
             child: const SignInScreen(
               providerConfigs:[
                 EmailProviderConfiguration(),

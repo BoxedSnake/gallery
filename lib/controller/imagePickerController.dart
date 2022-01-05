@@ -20,6 +20,7 @@ class imagePicker extends StatefulWidget {
 
 class _imagePickerState extends State<imagePicker> {
   XFile? imageFile=null;
+  String filename='';
 
 
   void _openCamera(BuildContext context)  async{
@@ -89,7 +90,8 @@ class _imagePickerState extends State<imagePicker> {
     firebase_storage.SettableMetadata metadata = firebase_storage.SettableMetadata(
       cacheControl: 'max-age=60',
       customMetadata: <String, String>{
-        'Display Name' : ' ',
+        // 'Display Name' : ' ',
+        'Display Name' : _formKey.toString(),
         'Uploaded by': userId,
         'Saved' : 'false',
         'Shared to Users' : ' ',
@@ -198,14 +200,18 @@ class _imagePickerState extends State<imagePicker> {
       );
     });
   }
+  final keyName = Key("imageName");
+  final _formKey = GlobalKey<FormState>();
 
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Pick Image Camera"),
         backgroundColor: Colors.blue,
+
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -213,11 +219,7 @@ class _imagePickerState extends State<imagePicker> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Card(
-                  child:( imageFile==null)?Text(""):
-                  Image.file(
-                    File(  imageFile!.path),),
-                ),
+
                 MaterialButton(
                   textColor: Colors.white,
                   color: Colors.blue,
@@ -225,12 +227,51 @@ class _imagePickerState extends State<imagePicker> {
                     _showChoiceDialog(context);},
                   child: (imageFile==null)
                       ? const Text("Select Image")
-                      : const Text("Replace Image",),
+                      : const Text("Replace Image"),
                 ),
                 (imageFile!=null)
                     ?
                 Column(
                     children: [
+                      Form(
+                          key: _formKey,
+
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                key: keyName,
+
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter name for picture.',
+                                ),
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return keyName. = value.toString();
+                                },
+                              ),
+                              MaterialButton(
+                                textColor: Colors.white,
+                                color: Colors.blue,
+                                onPressed:() {
+                                  if (_formKey.currentState!.validate()) {
+                                    print(keyName.toString());
+                                    uploadSelectedImage;
+
+                                  };
+                                },
+                                child: const Text("Upload Picture"),
+                              )
+                            ],
+                          )
+                      ),
+                      Card(
+                        child:( imageFile==null)?Text(""):
+                        Image.file(
+                          File(  imageFile!.path),
+                        scale: 10,),
+                      ),
                       //TODO: link form to current image.
                       // Form(
                       //   decoration: InputDecoration(
@@ -238,12 +279,7 @@ class _imagePickerState extends State<imagePicker> {
                       //     hintText: 'FileName',
                       //   ),
                       // ),
-                      MaterialButton(
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        onPressed: uploadSelectedImage,
-                        child: const Text("Upload Picture"),
-                      )
+
                     ]
                 )
                     :

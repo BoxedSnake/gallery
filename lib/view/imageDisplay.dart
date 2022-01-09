@@ -6,6 +6,7 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/view.dart';
 import 'package:path/path.dart';
+import 'package:gallery/controller/dbController.dart';
 
 // class imageDisplay extends StatefulWidget {
 //   const imageDisplay({Key? key}) : super(key: key);
@@ -43,9 +44,10 @@ Widget moreoptions() {
           value: ImageMenu.Share,
           child: Text("Share"),
         ),
-        const PopupMenuItem(
+        PopupMenuItem(
           value: ImageMenu.Rename,
-          child: Text("Rename"),
+          child: const Text("Rename"),
+          onTap: (){},
         ),
         const PopupMenuItem(
           value: ImageMenu.Remove,

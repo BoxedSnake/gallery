@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'package:gallery/model/imageModel.dart' as imagemodel;
+import 'dbController.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'dart:io';
@@ -20,8 +21,7 @@ class imagePicker extends StatefulWidget {
 
 class _imagePickerState extends State<imagePicker> {
   XFile? imageFile=null;
-  String filename='';
-
+  TextEditingController filenamecontroller = TextEditingController();
 
   void _openCamera(BuildContext context)  async{
     final pickedFile = await ImagePicker().pickImage(
@@ -85,28 +85,38 @@ class _imagePickerState extends State<imagePicker> {
   Future<void> uploadSelectedImage() async {
 
     File file = File(imageFile!.path.toString());
-    String userId = auth.currentUser!.uid;
+    String displayName = filenamecontroller.text.toString();
     String storedInDBName = userId.toString()+DateTime.now().toIso8601String();
+    var filepath = 'Images/$userId/$storedInDBName';
+
+    // String imageUrl = await cloudStorageDownloadUrl(filepath);
+
     firebase_storage.SettableMetadata metadata = firebase_storage.SettableMetadata(
       cacheControl: 'max-age=60',
       customMetadata: <String, String>{
-        // 'Display Name' : ' ',
-        'Display Name' : _formKey.toString(),
         'Uploaded by': userId,
-        'Saved' : 'false',
-        'Shared to Users' : ' ',
+
       },
-// do the addto firebase
     );
+// do the addto firebase
 
 
-    final filepath = 'Images/$userId/$storedInDBName';
 
 
-    final uploadTask = firebase_storage.FirebaseStorage.instance.ref(filepath).putFile(file, metadata);
+    final uploadTask = firebase_storage.FirebaseStorage.instance
+        .ref(filepath)
+        .putFile(file, metadata);
+
+    void postUpload()async{
+      String imageUrl = await cloudStorageDownloadUrl(filepath);
+
+      firestoreAddImage(displayName,storedInDBName,imageUrl);
+      Navigator.pop(context);
+    }
     // firebase_storage.TaskSnapshot imageUploadInProgress = await uploadTask(() => Navigator.pop(context));
 
-    firebase_storage.TaskSnapshot imageUploadComplete = await uploadTask.whenComplete(() => Navigator.pop(context));
+    firebase_storage.TaskSnapshot imageUploadComplete = await uploadTask.whenComplete(() => postUpload);
+    // firebase_storage.TaskSnapshot imageUploadComplete = await uploadTask.whenComplete(() => Navigator.pop(context));
 
     Widget uploadingImage(){
       return AlertDialog(
@@ -140,11 +150,11 @@ class _imagePickerState extends State<imagePicker> {
     //firebase_storage.SettableMetadata fullMetadata = firebase_storage.FullMetadata as firebase_storage.SettableMetadata;
 
     try {
-      // await firebase_storage.FirebaseStorage.instance
-      //     .ref('Images/$userId/$storedInDBName')
-      //     .putFile(file, metadata);
+
       uploadTask;
+
       imageUploadComplete;
+
 
     } on  firebase_storage.FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
@@ -157,6 +167,7 @@ class _imagePickerState extends State<imagePicker> {
 
     }
   }
+
 
 
 
@@ -239,7 +250,7 @@ class _imagePickerState extends State<imagePicker> {
                           child: Column(
                             children: <Widget>[
                               TextFormField(
-                                key: keyName,
+                                controller: filenamecontroller,
 
                                 decoration: const InputDecoration(
                                   hintText: 'Enter name for picture.',
@@ -248,24 +259,19 @@ class _imagePickerState extends State<imagePicker> {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter some text';
                                   }
-                                  return keyName. = value.toString();
+                                  return null;
                                 },
                               ),
-                              MaterialButton(
-                                textColor: Colors.white,
-                                color: Colors.blue,
-                                onPressed:() {
-                                  if (_formKey.currentState!.validate()) {
-                                    print(keyName.toString());
-                                    uploadSelectedImage;
-
-                                  };
-                                },
-                                child: const Text("Upload Picture"),
-                              )
                             ],
                           )
                       ),
+                      MaterialButton(
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        onPressed:uploadSelectedImage,
+                        child: const Text("Upload Picture"),
+                      ),
+
                       Card(
                         child:( imageFile==null)?Text(""):
                         Image.file(

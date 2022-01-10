@@ -8,7 +8,7 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/imageDisplay.dart';
 import 'package:gallery/controller/imagePickerController.dart';
-
+import 'package:gallery/controller/dbController.dart';
 
 class GalleryApp extends StatefulWidget {
   const GalleryApp({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class GalleryApp extends StatefulWidget {
 
 
 
-class gridViewProp {
+class gridViewProperty {
   bool listView = false;
   bool gridisthree = true;
   bool imageButtonEnabled = true;
@@ -28,9 +28,9 @@ class gridViewProp {
 
 class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
-  var suggestions = <WordPair>[];
+  var suggestions;
   var biggerFont = TextStyle(fontSize: 18.0);
-  var VS = new gridViewProp();
+  final VS = new gridViewProperty();
   //
   // bool viewtype = true;
   // bool gridisthree = true;
@@ -71,12 +71,10 @@ class _GalleryAppState extends State<GalleryApp> {
 
 
 
-  Future<void> _signout() async {
-    await FirebaseAuth.instance.signOut();
-  }
-
   void _home() {
-    setState(() {});
+    setState(() {
+
+    });
   }
 
   //thumbnil button test________________________________________________
@@ -94,7 +92,7 @@ class _GalleryAppState extends State<GalleryApp> {
       appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.logout_outlined),
-            onPressed: _signout,
+            onPressed: Database().signout,
           ),
           title: const Text('Gallery'), actions: [
         IconButton(
@@ -115,7 +113,7 @@ class _GalleryAppState extends State<GalleryApp> {
       ]),
       extendBody: true,
       // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
-      body: buildSuggestions(VS.listView, VS.gridisthree,VS.imageButtonEnabled, suggestions),
+      body: imageDisplay(VS.listView, VS.gridisthree,VS.imageButtonEnabled, suggestions),
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(

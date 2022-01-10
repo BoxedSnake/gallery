@@ -21,9 +21,10 @@ class imagePicker extends StatefulWidget {
 }
 
 class _imagePickerState extends State<imagePicker> {
-  XFile? imageFile = null;
-  TextEditingController filenamecontroller = TextEditingController();
+  XFile? imageFile;
+  TextEditingController fileNameController = TextEditingController();
   File? file;
+  final Database db = Database();
 
   void _openCamera(BuildContext context) async {
     final pickedFile = await ImagePicker().pickImage(
@@ -48,7 +49,7 @@ class _imagePickerState extends State<imagePicker> {
     Navigator.pop(context);
   }
 
-  void _openUrl(BuildContext context) async {
+  Future<void> _openUrl(BuildContext context) async {
     final pickedFile = await UrlImage();
     // ImagePicker().pickImage(
     //   source: ImageSource.camera,);
@@ -81,9 +82,10 @@ class _imagePickerState extends State<imagePicker> {
 
   Future<void> uploadSelectedImage() async {
     file = File(imageFile!.path.toString());
-    String displayName = filenamecontroller.text.toString();
-    String storedInDBName = userId.toString() + DateTime.now().toIso8601String();
-    var filepath = 'Images/$userId/$storedInDBName';
+    String displayName = fileNameController.text.toString();
+    String storedInDBName =
+        db.getCurrentUserId() + DateTime.now().toIso8601String();
+    var filepath = 'Images/${db.getCurrentUserId()}/$storedInDBName';
 
     // String imageUrl = await cloudStorageDownloadUrl(filepath);
 
@@ -91,7 +93,7 @@ class _imagePickerState extends State<imagePicker> {
         firebase_storage.SettableMetadata(
       cacheControl: 'max-age=60',
       customMetadata: <String, String>{
-        'Uploaded by': userId,
+        'Uploaded by': db.getCurrentUserId(),
       },
     );
 
@@ -101,16 +103,13 @@ class _imagePickerState extends State<imagePicker> {
         .ref(filepath)
         .putFile(file!, metadata);
 
-
-
-
     UploadTask? task = FirebaseApi.uploadFile(filepath, file!);
 
-    if(task == null) return;
-    final snapshot = await task!.whenComplete((){});
+    if (task == null) return;
+    final snapshot = await task!.whenComplete(() {});
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
-    firestoreAddImage(displayName, storedInDBName, downloadUrl);
+    db.firestoreAddImage(displayName, storedInDBName, downloadUrl);
     // firebase_storage.TaskSnapshot.
 
     ///upload selected image to cloud storage and metadata to firstore
@@ -127,8 +126,6 @@ class _imagePickerState extends State<imagePicker> {
     /// below is basic but working code
     firebase_storage.TaskSnapshot imageUploadComplete =
         await uploadTask.whenComplete(() => Navigator.pop(context));
-
-
 
     Widget uploadingImage() {
       return AlertDialog(
@@ -262,7 +259,7 @@ class _imagePickerState extends State<imagePicker> {
                             child: Column(
                               children: <Widget>[
                                 TextFormField(
-                                  controller: filenamecontroller,
+                                  controller: fileNameController,
                                   decoration: const InputDecoration(
                                     hintText: 'Enter name for picture.',
                                   ),

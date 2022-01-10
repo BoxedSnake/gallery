@@ -47,7 +47,7 @@ Widget moreoptions() {
         PopupMenuItem(
           value: ImageMenu.Rename,
           child: const Text("Rename"),
-          onTap: (){},
+          onTap: () {},
         ),
         const PopupMenuItem(
           value: ImageMenu.Remove,

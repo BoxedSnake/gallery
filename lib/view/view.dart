@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery/controller/dbController.dart';
 import 'package:gallery/controller/imagePickerController.dart';
 import 'package:gallery/main.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,12 +10,13 @@ import 'package:gallery/view/imageDisplay.dart';
 import 'package:gallery/controller/imagePickerController.dart';
 
 
-class RandomWords extends StatefulWidget {
-  const RandomWords({Key? key}) : super(key: key);
+class GalleryApp extends StatefulWidget {
+  const GalleryApp({Key? key}) : super(key: key);
 
   @override
-  _RandomWordsState createState() => _RandomWordsState();
+  _GalleryAppState createState() => _GalleryAppState();
 }
+
 
 
 class gridViewProp {
@@ -24,7 +26,7 @@ class gridViewProp {
 }
 
 
-class _RandomWordsState extends State<RandomWords> {
+class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
   var suggestions = <WordPair>[];
   var biggerFont = TextStyle(fontSize: 18.0);
@@ -102,6 +104,7 @@ class _RandomWordsState extends State<RandomWords> {
         IconButton(
           icon: Icon(Icons.sort_outlined),
           onPressed: () {},
+
         ),
         IconButton(
           icon: Icon(Icons.lock_outlined),
@@ -117,10 +120,7 @@ class _RandomWordsState extends State<RandomWords> {
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => imagePicker()),
-            );
+            Navigator.push(context, MaterialPageRoute(builder: (context) => imagePicker()),);
           },
           child: Icon(Icons.add_a_photo_outlined)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

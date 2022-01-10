@@ -15,7 +15,7 @@ class tileImage extends StatefulWidget {
 class _tileImageState extends State<tileImage> {
   final String imageId;
 
-  GetImageDetails(this.imageId);
+  GetImageDetails(imageId);
 
   // imageModel imageone = new imageModel(filename, uploader, downloadUrl, uploadDate, favourite, SharedUsers)
   @override

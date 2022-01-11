@@ -73,9 +73,9 @@ class _GalleryAppState extends State<GalleryApp> {
 
 
 
-  void _homeOrShared() {
+  _homeOrShared(bool boolean) {
     setState(() {
-      isHomeView = !isHomeView;
+      isHomeView = boolean;
     });
   }
 
@@ -143,7 +143,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 children: [
                   IconButton(
                     constraints: BoxConstraints(),
-                    onPressed: _homeOrShared,
+                    onPressed: _homeOrShared(true),
                     tooltip: 'Shows local photos',
                     color: Colors.white,
                     icon: const Icon(Icons.home_outlined),
@@ -158,7 +158,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: _homeOrShared,
+                    onPressed: _homeOrShared(false),
                     tooltip: 'Shows shared photos',
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),

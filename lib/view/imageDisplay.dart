@@ -5,6 +5,7 @@ import 'package:gallery/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
+import 'package:gallery/view/image/tile.dart';
 import 'package:gallery/view/view.dart';
 import 'package:path/path.dart';
 import 'package:gallery/controller/dbController.dart';
@@ -51,6 +52,7 @@ class _imageDisplayState extends State<imageDisplay> {
   }
 
   Widget buildSuggestions() {
+
     Widget gridview() {
       return StreamBuilder<QuerySnapshot>(
           stream: widget.imageList,
@@ -88,31 +90,32 @@ class _imageDisplayState extends State<imageDisplay> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   crossAxisCount: (widget.gridIsThree) ? 3 : 4,
-                  children: widget.imageList.data!.docs
-                      .map((DocumentSnapshot document) {
-                    Map<String, dynamic> data =
-                        document.data()! as Map<String, dynamic>;
-                  }));
+                  children: widget.imageList!.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                    tileImage(data, widget.imageButtonEnabled);
+                  })
+              );
             }
           });
     }
 
-    Widget listview() {
-      return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return const Divider();
-          final index = i ~/ 2;
-          if (index >= data.length) {
-            data.addAll(generateWordPairs().take(10));
-          }
+    // Widget listview() {
+    //   return ListView.builder(
+    //     padding: const EdgeInsets.all(16.0),
+    //     itemBuilder: (context, i) {
+    //       if (i.isOdd) return const Divider();
+    //       final index = i ~/ 2;
+    //       if (index >= data.length) {
+    //         data.addAll(generateWordPairs().take(10));
+    //       }
+    //
+    //       return _buildList(data[index]);
+    //     },
+    //   );
+    // }
 
-          return _buildList(data[index]);
-        },
-      );
-    }
-
-    return widget.listView ? listview() : gridview();
+    // return widget.listView ? listview() : gridview();
+    return widget.listView ? Container() : gridview();
   } //buildsuggestion
 
   @override

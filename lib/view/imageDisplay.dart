@@ -18,17 +18,14 @@ class imageDisplay extends StatefulWidget {
   final bool imageButtonEnabled;
   final imageList;
 
-
-  imageDisplay(this.listView, this.gridIsThree, this.imageButtonEnabled,
-      this.imageList);
+  imageDisplay(
+      this.listView, this.gridIsThree, this.imageButtonEnabled, this.imageList);
 
   @override
   _imageDisplayState createState() => _imageDisplayState();
 }
 
 class _imageDisplayState extends State<imageDisplay> {
-
-
   Widget moreoptions() {
     return PopupMenuButton<ImageMenu>(
       onSelected: (ImageMenu) {},
@@ -52,7 +49,6 @@ class _imageDisplayState extends State<imageDisplay> {
       },
     );
   }
-
 
   Widget buildSuggestions() {
     Widget gridview() {
@@ -87,45 +83,40 @@ class _imageDisplayState extends State<imageDisplay> {
                         color: Colors.orange,
                         fontSize: 20,
                       )));
-            }
-            else {
+            } else {
               return GridView.count(
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: (widget.gridIsThree) ? 3 : 4,
-                children: widget.imageList.data!.docs.map((DocumentSnapshot document) {
-                  Map<String, dynamic> data = document.data()! as Map<String,dynamic>;
-                  var selectedDoc = document.id;}
-                  ).toList(),);
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: (widget.gridIsThree) ? 3 : 4,
+                  children: widget.imageList.data!.docs
+                      .map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                  }));
             }
-    });
+          });
+    }
 
     Widget listview() {
       return ListView.builder(
-          padding: const EdgeInsets.all(16.0),stream
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: (context, i) {
+          if (i.isOdd) return const Divider();
+          final index = i ~/ 2;
+          if (index >= data.length) {
+            data.addAll(generateWordPairs().take(10));
+          }
 
+          return _buildList(data[index]);
+        },
+      );
     }
 
-    return listImage();
+    return widget.listView ? listview() : gridview();
+  } //buildsuggestion
+
+  @override
+  Widget build(BuildContext context) {
+    return buildSuggestions();
   }
-
-  ,
-
-  );
 }
-
-;
-
-return
-widget.listView
-?
-listview
-(
-) :
-
-gridview();} //buildsuggestion
-
-@override
-Widget build(BuildContext context) {
-  return buildSuggestions();
-}}

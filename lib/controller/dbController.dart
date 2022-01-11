@@ -16,11 +16,17 @@ class Database {
       firebase_storage.FirebaseStorage.instance;
   final CollectionReference firebaseImages =
       FirebaseFirestore.instance.collection('userImages');
+  bool isHomeView = true;
+
+
+  bool toggleHomeView(){
+    return isHomeView =!isHomeView;
+  }
+
 
   /// authenticate functions
-  getCurrentUserId() {
-    String userId = auth.currentUser!.uid;
-    return userId;
+  String getCurrentUserId() {
+    return auth.currentUser!.uid;
   }
 
   ///Signout function
@@ -29,16 +35,17 @@ class Database {
   }
 
   ///query header set
-  queryHeader(bool home) {
-    String queryLocation = home ? "UploadedBy" : "Shared to Users";
-    var refValue = home ? getCurrentUserId() : true;
+  queryHeader() {
+
+    String queryLocation = isHomeView ? "UploadedBy" : "Shared to Users";
+    var refValue = isHomeView ? getCurrentUserId() : true;
 
     var query = firebaseImages.where(queryLocation, isEqualTo: refValue);
     return query;
   }
 
-  querySnapshot(bool home) {
-    return queryHeader(home).snapshots();
+  querySnapshot() {
+    return queryHeader().snapshots();
   }
 
   /// Cloud Storage __________________________________________
@@ -64,7 +71,7 @@ class Database {
         .add({
           'DisplayName': imageName,
           'fileName': fileName,
-          'UploadedBy': getCurrentUserId,
+          'UploadedBy': getCurrentUserId(),
           'Saved': false,
           'Shared to Users': false,
             'dateUploaded': DateTime.now(),
@@ -77,12 +84,11 @@ class Database {
 
   ///Firestore favourite/unfavourite current image
   Future<void> favouriteImage(String fileName, bool savedValue) {
-    savedValue = !savedValue;
     return firebaseImages
         .doc(fileName)
         .update(
           {
-            'Saved': savedValue,
+            'Saved': !savedValue,
             'dateModified': DateTime.now(),
           },
         )
@@ -112,12 +118,11 @@ class Database {
 
   ///Firestore Sharing current image
   Future<void> shareImage(String fileName, bool shareValue) {
-    shareValue = !shareValue;
     return firebaseImages
         .doc(fileName)
         .update(
           {
-            'Shared to Users': shareValue,
+            'Shared to Users': !shareValue,
             'dateModified': DateTime.now(),
           },
         )

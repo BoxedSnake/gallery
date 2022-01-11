@@ -24,7 +24,7 @@ class _imagePickerState extends State<imagePicker> {
   XFile? imageFile;
   TextEditingController fileNameController = TextEditingController();
   File? file;
-  final Database db = Database();
+  // final Database db = Database();
 
   void _openCamera(BuildContext context) async {
     final pickedFile = await ImagePicker().pickImage(
@@ -84,8 +84,8 @@ class _imagePickerState extends State<imagePicker> {
     file = File(imageFile!.path.toString());
     String displayName = fileNameController.text.toString();
     String storedInDBName =
-        db.getCurrentUserId() + DateTime.now().toIso8601String();
-    var filepath = 'Images/${db.getCurrentUserId()}/$storedInDBName';
+        Database().getCurrentUserId() + DateTime.now().toIso8601String();
+    var filepath = 'Images/${Database().getCurrentUserId()}/$storedInDBName';
 
     // String imageUrl = await cloudStorageDownloadUrl(filepath);
 
@@ -93,7 +93,7 @@ class _imagePickerState extends State<imagePicker> {
         firebase_storage.SettableMetadata(
       cacheControl: 'max-age=60',
       customMetadata: <String, String>{
-        'Uploaded by': db.getCurrentUserId(),
+        'Uploaded by': Database().getCurrentUserId(),
       },
     );
 
@@ -109,7 +109,7 @@ class _imagePickerState extends State<imagePicker> {
     final snapshot = await task!.whenComplete(() {});
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
-    db.firestoreAddImage(displayName, storedInDBName, downloadUrl);
+    Database().firestoreAddImage(displayName, storedInDBName, downloadUrl);
     // firebase_storage.TaskSnapshot.
 
     ///upload selected image to cloud storage and metadata to firstore

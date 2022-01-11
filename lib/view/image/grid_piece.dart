@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gallery/controller/image_overlay_buttons.dart';
 
 class tileImage extends StatefulWidget {
+  // final Map<String, dynamic> imageData;
   final imageData;
   final bool interfaceButtons;
 

@@ -17,21 +17,19 @@ class GalleryApp extends StatefulWidget {
   _GalleryAppState createState() => _GalleryAppState();
 }
 
-
-
 class gridViewProperty {
   bool listView = false;
   bool gridisthree = true;
   bool imageButtonEnabled = true;
 }
 
-
 class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
   var biggerFont = TextStyle(fontSize: 18.0);
   final VS = new gridViewProperty();
-  bool isHomeView = true;
+  final database = new Database();
   var imageList;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   //
   // bool viewtype = true;
@@ -64,20 +62,20 @@ class _GalleryAppState extends State<GalleryApp> {
     });
   }
 
-
-  toggleLocked(){
+  toggleLocked() {
     setState(() {
       VS.imageButtonEnabled = !VS.imageButtonEnabled;
     });
   }
 
-
-
-  _homeOrShared(bool boolean) {
+  toggleHomeOrShared(){
     setState(() {
-      isHomeView = boolean;
+      database.toggleHomeView;
+
+      imageList = database.querySnapshot();
     });
   }
+
 
   //thumbnil button test________________________________________________
 
@@ -90,38 +88,43 @@ class _GalleryAppState extends State<GalleryApp> {
 
   @override
   Widget build(BuildContext context) {
-    imageList ??= Database().querySnapshot(isHomeView);
+    imageList ??= database.querySnapshot();
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.logout_outlined),
             onPressed: Database().signout,
           ),
-          title: const Text('Gallery'), actions: [
-        IconButton(
-          icon: Icon(Icons.grid_view_outlined),
-          onPressed: _toggleviewtype,
-        ),
-        IconButton(
-          icon: Icon(Icons.sort_outlined),
-          onPressed: () {},
+          title: Text(auth.currentUser!.uid),
+          // title: const Text('Gallery'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.grid_view_outlined),
+              onPressed: _toggleviewtype,
+            ),
+            IconButton(
+              icon: Icon(Icons.sort_outlined),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.lock_outlined),
+              onPressed: toggleLocked,
+            ),
 
-        ),
-        IconButton(
-          icon: Icon(Icons.lock_outlined),
-          onPressed: toggleLocked,
-        ),
-
-        // IconButton(onPressed: _expandLayout, icon: icon)
-      ]),
+            // IconButton(onPressed: _expandLayout, icon: icon)
+          ]),
       extendBody: true,
       // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
-      body: imageDisplay(VS.listView, VS.gridisthree,VS.imageButtonEnabled, imageList),
+      body: imageDisplay(
+          VS.listView, VS.gridisthree, VS.imageButtonEnabled, imageList),
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => imagePicker()),);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => imagePicker()),
+            );
           },
           child: Icon(Icons.add_a_photo_outlined)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -143,7 +146,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 children: [
                   IconButton(
                     constraints: BoxConstraints(),
-                    onPressed: _homeOrShared(true),
+                    onPressed: toggleHomeOrShared,
                     tooltip: 'Shows local photos',
                     color: Colors.white,
                     icon: const Icon(Icons.home_outlined),
@@ -158,7 +161,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: _homeOrShared(false),
+                    onPressed: toggleHomeOrShared,
                     tooltip: 'Shows shared photos',
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),

@@ -17,10 +17,10 @@ class imageDisplay extends StatefulWidget {
   final bool listView;
   final bool gridIsThree;
   final bool imageButtonEnabled;
-  final imageList;
+  var imageList;
 
   imageDisplay(
-      this.listView, this.gridIsThree, this.imageButtonEnabled, this.imageList);
+      this.listView, this.gridIsThree, this.imageButtonEnabled, this.imageList, {Key? key}): super(key: key);
 
   @override
   _imageDisplayState createState() => _imageDisplayState();
@@ -90,9 +90,9 @@ class _imageDisplayState extends State<imageDisplay> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   crossAxisCount: (widget.gridIsThree) ? 3 : 4,
-                  children: widget.imageList!.map((DocumentSnapshot document) {
+                  children: widget.imageList!.snapshot.docs.map((DocumentSnapshot document) {
                     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                    tileImage(data, widget.imageButtonEnabled);
+                    return tileImage(data, widget.imageButtonEnabled);
                   })
               );
             }

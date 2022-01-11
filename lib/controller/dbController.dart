@@ -67,7 +67,7 @@ class Database {
           'UploadedBy': getCurrentUserId,
           'Saved': false,
           'Shared to Users': false,
-          'dateUploaded': DateTime.now(),
+            'dateUploaded': DateTime.now(),
           'dateModified': DateTime.now(),
           'fileStorageLocation': imageAddress
         })

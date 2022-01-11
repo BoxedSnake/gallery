@@ -18,33 +18,30 @@ class Database {
       FirebaseFirestore.instance.collection('userImages');
 
   /// authenticate functions
-  ///
-  ///
   getCurrentUserId() {
     String userId = auth.currentUser!.uid;
     return userId;
   }
 
+  ///Signout function
   Future<void> signout() async {
     await FirebaseAuth.instance.signOut();
   }
 
+  ///query header set
   queryHeader(bool home) {
     String queryLocation = home ? "UploadedBy" : "Shared to Users";
     var refValue = home ? getCurrentUserId() : true;
 
-    var query = firebaseImages
-        .where(queryLocation, isEqualTo: refValue);
+    var query = firebaseImages.where(queryLocation, isEqualTo: refValue);
     return query;
   }
 
-  querySnapshot(bool home){
+  querySnapshot(bool home) {
     return queryHeader(home).snapshots();
   }
 
-
-
-
+  /// Cloud Storage __________________________________________
   ///Cloud Storage Download Url
   ///
   Future<String> cloudStorageDownloadUrl(String imageAddress) async {
@@ -55,6 +52,7 @@ class Database {
     return downloadUrl;
   }
 
+  /// Firestore functions________________________________________________
   ///Firestore add new image
   ///
   Future<void> firestoreAddImage(
@@ -70,14 +68,30 @@ class Database {
           'Saved': false,
           'Shared to Users': false,
           'dateUploaded': DateTime.now(),
-          'dateModfied': DateTime.now(),
-
-          ///TODO:address image location issue
+          'dateModified': DateTime.now(),
           'fileStorageLocation': imageAddress
         })
         .then((value) => print("Image Added"))
         .catchError((error) => print("Failed to add image: $error"));
   }
+
+  ///Firestore favourite/unfavourite current image
+  Future<void> favouriteImage(String fileName, bool savedValue) {
+    savedValue = !savedValue;
+    return firebaseImages
+        .doc(fileName)
+        .update(
+          {
+            'Saved': savedValue,
+            'dateModified': DateTime.now(),
+          },
+        )
+        .then((value) => print("Image is Saved: $savedValue"))
+        .catchError(
+            (error) => print("Failed to Save/unsave image due to: $error"));
+  }
+
+  ///More Options firestore methods_________________
 
   ///Firestore rename current image
   Future<void> renameImage(
@@ -86,30 +100,38 @@ class Database {
   ) {
     return firebaseImages
         .doc(fileName)
-        .set(
+        .update(
           {
             'DisplayName': imageName,
-            'dateModfied': DateTime.now(),
+            'dateModified': DateTime.now(),
           },
-          SetOptions(merge: true),
         )
         .then((value) => print("Image renamed"))
         .catchError((error) => print("Failed to rename image: $error"));
   }
 
-  ///Firestore favourite/unfavourite current image
-  Future<void> favouriteImage(String fileName, bool savedValue) {
-    savedValue = !savedValue;
+  ///Firestore Sharing current image
+  Future<void> shareImage(String fileName, bool shareValue) {
+    shareValue = !shareValue;
     return firebaseImages
         .doc(fileName)
-        .set(
+        .update(
           {
-            'Saved': savedValue,
+            'Shared to Users': shareValue,
+            'dateModified': DateTime.now(),
           },
-          SetOptions(merge: true),
         )
-        .then((value) => print("Image is Saved: $savedValue"))
+        .then((value) => print("Image is Shared: $shareValue"))
         .catchError(
-            (error) => print("Failed to Save/unsave image due to: $error"));
+            (error) => print("Failed to Shared/Unshared image due to: $error"));
+  }
+
+  ///Firestore Remove current image
+  Future<void> removeImage(String fileName) {
+    return firebaseImages
+        .doc(fileName)
+        .delete()
+        .then((value) => print("Image is removed:"))
+        .catchError((error) => print("Failed to remove image due to: $error"));
   }
 }

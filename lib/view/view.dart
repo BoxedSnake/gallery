@@ -28,9 +28,11 @@ class gridViewProperty {
 
 class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
-  var suggestions;
   var biggerFont = TextStyle(fontSize: 18.0);
   final VS = new gridViewProperty();
+  bool isHomeView = true;
+  var imageList;
+
   //
   // bool viewtype = true;
   // bool gridisthree = true;
@@ -71,9 +73,9 @@ class _GalleryAppState extends State<GalleryApp> {
 
 
 
-  void _home() {
+  void _homeOrShared() {
     setState(() {
-
+      isHomeView = !isHomeView;
     });
   }
 
@@ -88,6 +90,7 @@ class _GalleryAppState extends State<GalleryApp> {
 
   @override
   Widget build(BuildContext context) {
+    imageList ??= Database().querySnapshot(isHomeView);
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
@@ -113,7 +116,7 @@ class _GalleryAppState extends State<GalleryApp> {
       ]),
       extendBody: true,
       // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
-      body: imageDisplay(VS.listView, VS.gridisthree,VS.imageButtonEnabled, suggestions),
+      body: imageDisplay(VS.listView, VS.gridisthree,VS.imageButtonEnabled, imageList),
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(
@@ -140,7 +143,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 children: [
                   IconButton(
                     constraints: BoxConstraints(),
-                    onPressed: _home,
+                    onPressed: _homeOrShared,
                     tooltip: 'Shows local photos',
                     color: Colors.white,
                     icon: const Icon(Icons.home_outlined),
@@ -155,7 +158,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: _homeOrShared,
                     tooltip: 'Shows shared photos',
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),

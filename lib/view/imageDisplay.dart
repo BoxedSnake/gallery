@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/main.dart';
@@ -7,26 +8,26 @@ import 'package:english_words/english_words.dart';
 import 'package:gallery/view/view.dart';
 import 'package:path/path.dart';
 import 'package:gallery/controller/dbController.dart';
+import 'package:gallery/view/image/list.dart';
 
 enum ImageMenu { Share, Rename, Remove }
 
 class imageDisplay extends StatefulWidget {
   final bool listView;
-  final bool gridisthree;
+  final bool gridIsThree;
   final bool imageButtonEnabled;
+  final imageList;
 
-  imageDisplay(this.listView, this.gridisthree, this.imageButtonEnabled);
+
+  imageDisplay(this.listView, this.gridIsThree, this.imageButtonEnabled,
+      this.imageList);
 
   @override
   _imageDisplayState createState() => _imageDisplayState();
 }
 
 class _imageDisplayState extends State<imageDisplay> {
-  togglebool(bool isLiked) {
-    setState(() {
-      isLiked = !isLiked;
-    });
-  }
+
 
   Widget moreoptions() {
     return PopupMenuButton<ImageMenu>(
@@ -52,100 +53,79 @@ class _imageDisplayState extends State<imageDisplay> {
     );
   }
 
-  Widget _buildTile(bool interfaceButtons,) {
-    bool isLiked = false;
-    return Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: NetworkImage(
-              'https://cdn.britannica.com/16/1016-050-8932B817/Gray-whale-breaching.jpg'),
-          fit: BoxFit.cover,
-        )),
-        child: (interfaceButtons)
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  moreoptions(),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      isLiked = !isLiked;
-                    },
-                    // onPressed: togglebool(isLiked),
-                    icon: (isLiked)
-                        ? Icon(CupertinoIcons.heart_fill)
-                        : Icon(CupertinoIcons.heart),
-                  )
-                ],
-              )
-            : Container());
-  }
 
-  Widget _buildList(WordPair pair) {
-    bool isLiked = false;
-
-    return ListTile(
-        leading: IconButton(
-          onPressed: () {
-            isLiked = !isLiked;
-          },
-          // onPressed: togglebool(isLiked),
-          icon: (isLiked)
-              ? Icon(CupertinoIcons.heart_fill)
-              : Icon(CupertinoIcons.heart),
-        ),
-        title: Text(
-          pair.asPascalCase,
-        ),
-        subtitle: Text(
-          "Date Uploaded: " + DateTime.now().toString() + "\nSize: 1kB",
-          style: TextStyle(fontSize: 10),
-        ),
-        trailing: moreoptions());
-  }
-
-  Widget buildSuggestions(bool type, bool enabledImage, suggestions) {
+  Widget buildSuggestions() {
     Widget gridview() {
-      return GridView.count(
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: (widget.gridisthree) ? 3 : 4,
-        children: [
-          _buildTile(enabledImage),
+      return StreamBuilder<QuerySnapshot>(
+          stream: widget.imageList,
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('Something went wrong',
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontSize: 20,
+                  ));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Loading...',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 20,
+                        ))
+                  ]);
+            }
 
-        ],
-      );
-    }
-
-    ;
+            if (snapshot.data!.docs.isEmpty) {
+              return Container(
+                  alignment: Alignment.center,
+                  child: const Text("No results",
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontSize: 20,
+                      )));
+            }
+            else {
+              return GridView.count(
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: (widget.gridIsThree) ? 3 : 4,
+                children: widget.imageList.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data = document.data()! as Map<String,dynamic>;
+                  var selectedDoc = document.id;}
+                  ).toList(),);
+            }
+    });
 
     Widget listview() {
       return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i) {
-          if (i.isOdd) return const Divider();
-          final index = i ~/ 2;
-          if (index >= suggestions.length) {
-            suggestions.addAll(generateWordPairs().take(10));
-          }
+          padding: const EdgeInsets.all(16.0),stream
 
-          return _buildList(suggestions[index]);
-        },
-      );
     }
 
-    ;
-
-    return widget.listView ? listview() : gridview();
-  } //buildsuggestion
-
-  @override
-  Widget build(BuildContext context) {
-    return buildSuggestions(
-      widget.listView,
-      widget.gridisthree,
-      widget.imageButtonEnabled,
-    );
+    return listImage();
   }
+
+  ,
+
+  );
 }
+
+;
+
+return
+widget.listView
+?
+listview
+(
+) :
+
+gridview();} //buildsuggestion
+
+@override
+Widget build(BuildContext context) {
+  return buildSuggestions();
+}}

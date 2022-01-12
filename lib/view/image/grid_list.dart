@@ -33,11 +33,12 @@ class _gridListState extends State<gridList> {
     return GridView.count(
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      crossAxisCount: (widget.gridIsThree) ? 3 : 4,
+      crossAxisCount: (widget.gridIsThree) ? 2 : 3,
       children: widget.snapshot.data!.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-        return tileImage(data, widget.imageButtonEnabled);
+        var docId = document.id;
+        return tileImage(data,docId, widget.imageButtonEnabled);
       }).toList(),
     );
   }

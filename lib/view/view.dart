@@ -26,9 +26,10 @@ class gridViewProperty {
 class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
   var biggerFont = TextStyle(fontSize: 18.0);
-  final VS = new gridViewProperty();
-  final database = new Database();
+  final VS = gridViewProperty();
+  final database = Database();
   var imageList;
+  String viewTitle = "Home";
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   //
@@ -68,14 +69,33 @@ class _GalleryAppState extends State<GalleryApp> {
     });
   }
 
-  toggleHomeOrShared(){
+  toggleHome() {
     setState(() {
-      database.toggleHomeView;
-
-      imageList = database.querySnapshot();
+      if (database.isHomeView != true) {
+        viewTitle = "Home";
+        database.toggleHomeView();
+        imageList = database.querySnapshot();
+      }
     });
+    print(database.isHomeView);
+    print(database.querySnapshot().toString());
   }
 
+  toggleShared() {
+    setState(() {
+      if (database.isHomeView == true) {
+        viewTitle = "Shared";
+        database.toggleHomeView();
+        imageList = database.querySnapshot();
+
+      }
+
+      print(database.isHomeView);
+      print(database.querySnapshot().toString());
+    });
+    print(database.isHomeView);
+    print(database.querySnapshot().toString());
+  }
 
   //thumbnil button test________________________________________________
 
@@ -95,7 +115,7 @@ class _GalleryAppState extends State<GalleryApp> {
             icon: Icon(Icons.logout_outlined),
             onPressed: Database().signout,
           ),
-          title: Text(auth.currentUser!.uid),
+          title: Text(viewTitle),
           // title: const Text('Gallery'),
           actions: [
             IconButton(
@@ -135,7 +155,7 @@ class _GalleryAppState extends State<GalleryApp> {
   Widget _bottomNavBar() {
     return BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Colors.black,
+        color: Colors.blue,
         child: IconTheme(
           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
           child: Row(
@@ -146,7 +166,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 children: [
                   IconButton(
                     constraints: BoxConstraints(),
-                    onPressed: toggleHomeOrShared,
+                    onPressed: toggleHome,
                     tooltip: 'Shows local photos',
                     color: Colors.white,
                     icon: const Icon(Icons.home_outlined),
@@ -161,7 +181,7 @@ class _GalleryAppState extends State<GalleryApp> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: toggleHomeOrShared,
+                    onPressed: toggleShared,
                     tooltip: 'Shows shared photos',
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),

@@ -49,17 +49,17 @@ class _imagePickerState extends State<imagePicker> {
     Navigator.pop(context);
   }
 
-  Future<void> _openUrl(BuildContext context) async {
-    final pickedFile = await UrlImage();
-    // ImagePicker().pickImage(
-    //   source: ImageSource.camera,);
-
-    // setState(() {
-    //   imageFile = pickedFile;
-    // });
-
-    // Navigator.pop(context);
-  }
+  // Future<void> _openUrl(BuildContext context) async {
+  //   final pickedFile = await UrlImage();
+  //   // ImagePicker().pickImage(
+  //   //   source: ImageSource.camera,);
+  //
+  //   // setState(() {
+  //   //   imageFile = pickedFile;
+  //   // });
+  //
+  //   // Navigator.pop(context);
+  // }
 
 // widget to launch image and loard from url
   Widget UrlImage() {
@@ -80,12 +80,16 @@ class _imagePickerState extends State<imagePicker> {
     });
   }
 
+
   Future<void> uploadSelectedImage() async {
     file = File(imageFile!.path.toString());
     String displayName = fileNameController.text.toString();
-    String storedInDBName =
-        Database().getCurrentUserId() + DateTime.now().toIso8601String();
-    var filepath = 'Images/${Database().getCurrentUserId()}/$storedInDBName';
+    // String storedInDBName =
+    //     Database().getCurrentUserId() + DateTime.now().toIso8601String();
+    var imageName = file!.path.split('/').last;
+
+    var filepath = 'Images/${Database().getCurrentUserId()}/$imageName';
+    // var filepath = 'Images/${Database().getCurrentUserId()}/$storedInDBName';
 
     // String imageUrl = await cloudStorageDownloadUrl(filepath);
 
@@ -106,10 +110,11 @@ class _imagePickerState extends State<imagePicker> {
     UploadTask? task = FirebaseApi.uploadFile(filepath, file!);
 
     if (task == null) return;
-    final snapshot = await task!.whenComplete(() {});
+    final snapshot = await task.whenComplete(() {});
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
-    Database().firestoreAddImage(displayName, storedInDBName, downloadUrl);
+    Database().firestoreAddImage(displayName,  downloadUrl);
+    // Database().firestoreAddImage(displayName, storedInDBName, downloadUrl);
     // firebase_storage.TaskSnapshot.
 
     ///upload selected image to cloud storage and metadata to firstore
@@ -154,6 +159,9 @@ class _imagePickerState extends State<imagePicker> {
     // }
 
     //firebase_storage.SettableMetadata fullMetadata = firebase_storage.FullMetadata as firebase_storage.SettableMetadata;
+
+    https://firebasestorage.googleapis.com/v0/b/gallery-9900a.appspot.com/o/Images%2Fgfs7jVOYSqbAFLm9iINCko0VWAo2%2Fscaled_image_picker1646461249622486742.jpg?alt=media&token=1d2e1f4c-824f-4487-9c77-ad582500e10d
+    https://firebasestorage.googleapis.com/v0/b/gallery-9900a.appspot.com/o/Images%2Fgfs7jVOYSqbAFLm9iINCko0VWAo2%2Fscaled_image_picker1646461249622486742.jpg?alt=media&token=1d2e1f4c-824f-4487-9c77-ad582500e10d
 
     try {
       uploadTask;

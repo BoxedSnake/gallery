@@ -8,9 +8,10 @@ import 'package:gallery/controller/image_overlay_buttons.dart';
 class tileImage extends StatefulWidget {
   // final Map<String, dynamic> imageData;
   final imageData;
+  final imageId;
   final bool interfaceButtons;
 
-  tileImage(this.imageData, this.interfaceButtons);
+  tileImage(this.imageData, this.imageId, this.interfaceButtons);
 
   @override
   State<tileImage> createState() => _tileImageState();
@@ -32,13 +33,13 @@ class _tileImageState extends State<tileImage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  moreoptions(widget.imageData),
+                  moreoptions(widget.imageData, widget.imageId),
                   const Spacer(),
                   IconButton(
                     onPressed: () {
                       setState(() {
                         Database().favouriteImage(
-                          widget.imageData['fileName'],
+                          widget.imageId,
                           widget.imageData['Saved'],
                         );
                       });

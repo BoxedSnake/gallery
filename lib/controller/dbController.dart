@@ -18,11 +18,9 @@ class Database {
       FirebaseFirestore.instance.collection('userImages');
   bool isHomeView = true;
 
-
-  bool toggleHomeView(){
-    return isHomeView =!isHomeView;
+  toggleHomeView() {
+    isHomeView = !isHomeView;
   }
-
 
   /// authenticate functions
   String getCurrentUserId() {
@@ -36,16 +34,26 @@ class Database {
 
   ///query header set
   queryHeader() {
-
+    var query;
     String queryLocation = isHomeView ? "UploadedBy" : "Shared to Users";
     var refValue = isHomeView ? getCurrentUserId() : true;
+    if (isHomeView) {
+      var query =
+          firebaseImages.where("UploadedBy", isEqualTo: getCurrentUserId());
+      print(query);
 
-    var query = firebaseImages.where(queryLocation, isEqualTo: refValue);
-    return query;
+      return query;
+    } else {
+      var query = firebaseImages.where("Shared to Users", isEqualTo: true);
+      print(query);
+
+      return query;
+    }
   }
 
   querySnapshot() {
-    return queryHeader().snapshots();
+    var query = queryHeader().snapshots();
+    return query;
   }
 
   /// Cloud Storage __________________________________________
@@ -63,18 +71,19 @@ class Database {
   ///Firestore add new image
   ///
   Future<void> firestoreAddImage(
-      String imageName, String fileName, String imageAddress) {
+      String imageName, String imageAddress) {
+      // String imageName, String fileName, String imageAddress) {
     // String fileAddress = cloudStorageDownloadUrl(imageAddress) as String;
     // print(fileAddress);
 
     return firebaseImages
         .add({
           'DisplayName': imageName,
-          'fileName': fileName,
+          // 'fileName': fileName,
           'UploadedBy': getCurrentUserId(),
           'Saved': false,
           'Shared to Users': false,
-            'dateUploaded': DateTime.now(),
+          'dateUploaded': DateTime.now(),
           'dateModified': DateTime.now(),
           'fileStorageLocation': imageAddress
         })
@@ -101,8 +110,8 @@ class Database {
 
   ///Firestore rename current image
   Future<void> renameImage(
-    String imageName,
-    String fileName,
+      String fileName,
+      String imageName,
   ) {
     return firebaseImages
         .doc(fileName)
@@ -118,13 +127,18 @@ class Database {
 
   ///Firestore Sharing current image
   Future<void> shareImage(String fileName, bool shareValue) {
+    print(shareValue);
+    print(fileName);
+
     return firebaseImages
         .doc(fileName)
+        // .set(
         .update(
           {
             'Shared to Users': !shareValue,
             'dateModified': DateTime.now(),
           },
+          // SetOptions(merge: true),
         )
         .then((value) => print("Image is Shared: $shareValue"))
         .catchError(
@@ -136,7 +150,7 @@ class Database {
     return firebaseImages
         .doc(fileName)
         .delete()
-        .then((value) => print("Image is removed:"))
+        .then((value) => print("Image is removed:$fileName"))
         .catchError((error) => print("Failed to remove image due to: $error"));
   }
 }

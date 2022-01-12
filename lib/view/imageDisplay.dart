@@ -43,16 +43,18 @@ class _imageDisplayState extends State<imageDisplay> {
                 ));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  CircularProgressIndicator(),
-                  Text('Loading...',
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontSize: 20,
-                      ))
-                ]);
+            return Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Loading...',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 20,
+                        ))
+                  ]),
+            );
           }
 
           if (snapshot.data!.docs.isEmpty) {

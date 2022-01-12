@@ -40,7 +40,7 @@ class _listImageState extends State<listImage> {
           "Date Uploaded: " + widget.imageData['dateUploaded'],
           style: TextStyle(fontSize: 10),
         ),
-        trailing: moreoptions(widget.imageData)
+        // trailing: moreoptions(widget.imageData, )
     );
         // trailing: moreoptions());
   }

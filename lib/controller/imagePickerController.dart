@@ -24,10 +24,12 @@ class _imagePickerState extends State<imagePicker> {
   XFile? imageFile;
   TextEditingController fileNameController = TextEditingController();
   File? file;
+
   // final Database db = Database();
 
   void _openCamera(BuildContext context) async {
     final pickedFile = await ImagePicker().pickImage(
+      //image compressionsssssssssssssssssssssssssssssssssss
       imageQuality: 50,
       source: ImageSource.camera,
     );
@@ -49,43 +51,53 @@ class _imagePickerState extends State<imagePicker> {
     Navigator.pop(context);
   }
 
-  // Future<void> _openUrl(BuildContext context) async {
-  //   final pickedFile = await UrlImage();
-  //   // ImagePicker().pickImage(
-  //   //   source: ImageSource.camera,);
-  //
-  //   // setState(() {
-  //   //   imageFile = pickedFile;
-  //   // });
-  //
-  //   // Navigator.pop(context);
-  // }
 
 // widget to launch image and loard from url
-  Widget UrlImage() {
-    return Image.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/widgets/falcon.jpg',
-        loadingBuilder: (BuildContext context, Widget child,
-            ImageChunkEvent? loadingProgress) {
-      if (loadingProgress == null) {
-        return child;
-      }
-      return Center(
-          child: CircularProgressIndicator(
-        value: loadingProgress.expectedTotalBytes != null
-            ? loadingProgress.cumulativeBytesLoaded /
-                loadingProgress.expectedTotalBytes!
-            : null,
-      ));
-    });
-  }
+//   Widget UrlImage() {
+//     return Image.network(
+//         'https://flutter.github.io/assets-for-api-docs/assets/widgets/falcon.jpg',
+//         loadingBuilder: (BuildContext context, Widget child,
+//             ImageChunkEvent? loadingProgress) {
+//       if (loadingProgress == null) {
+//         return child;
+//       }
+//       return Center(
+//           child: CircularProgressIndicator(
+//         value: loadingProgress.expectedTotalBytes != null
+//             ? loadingProgress.cumulativeBytesLoaded /
+//                 loadingProgress.expectedTotalBytes!
+//             : null,
+//       ));
+//     });
+//   }
+
+
+  Widget buildUploadStatus(UploadTask task) => StreamBuilder<TaskSnapshot>(
+        stream: task.snapshotEvents,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final snap = snapshot.data!;
+            final progress = snap.bytesTransferred / snap.totalBytes;
+            var percentage = (progress * 100).toStringAsFixed(2);
+            var textnum = '$percentage %';
+            if (percentage == '100.00') {
+              textnum = 'Upload complete';
+            }
+            return Text(textnum,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange));
+          } else {
+            return Container();
+          }
+        },
+      );
 
 
   Future<void> uploadSelectedImage() async {
     file = File(imageFile!.path.toString());
     String displayName = fileNameController.text.toString();
-    // String storedInDBName =
-    //     Database().getCurrentUserId() + DateTime.now().toIso8601String();
     var imageName = file!.path.split('/').last;
 
     var filepath = 'Images/${Database().getCurrentUserId()}/$imageName';
@@ -113,7 +125,7 @@ class _imagePickerState extends State<imagePicker> {
     final snapshot = await task.whenComplete(() {});
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
-    Database().firestoreAddImage(displayName,  downloadUrl);
+    Database().firestoreAddImage(displayName, downloadUrl);
     // Database().firestoreAddImage(displayName, storedInDBName, downloadUrl);
     // firebase_storage.TaskSnapshot.
 
@@ -124,11 +136,6 @@ class _imagePickerState extends State<imagePicker> {
     //   Navigator.pop(context);
     // }
 
-    ///prep for uploading in progress code
-    // firebase_storage.TaskSnapshot imageUploadInProgress = await uploadTask(() => Navigator.pop(context));
-    ///failed code for getting download url
-    // firebase_storage.TaskSnapshot imageUploadComplete = await uploadTask.whenComplete(() => postUpload);
-    /// below is basic but working code
     firebase_storage.TaskSnapshot imageUploadComplete =
         await uploadTask.whenComplete(() => Navigator.pop(context));
 
@@ -141,32 +148,12 @@ class _imagePickerState extends State<imagePicker> {
       );
     }
 
-    //
-    // firebase_storage.FirebaseStorage
-    // final firebase_storage.FirebaseStorage firebaseStorageRef = FirebaseStorage.instance
-    //     .ref()
-    //     .child('$path/${userID}_${timeStamp}_${number}_${tag}.jpg');
-    // StorageUploadTask uploadTask =
-    // firebaseStorageRef.putFile(image);
-    // StorageTaskSnapshot storageSnapshot = await uploadTask.onComplete;
-    // var downloadUrl = await storageSnapshot.ref.getDownloadURL();
-    // if (uploadTask.isComplete) {
-    //   final String url = downloadUrl.toString();
-    //   print(url);
-    //   //Success! Upload is complete
-    // } else {
-    //   //Error uploading file
-    // }
-
-    //firebase_storage.SettableMetadata fullMetadata = firebase_storage.FullMetadata as firebase_storage.SettableMetadata;
-
-    https://firebasestorage.googleapis.com/v0/b/gallery-9900a.appspot.com/o/Images%2Fgfs7jVOYSqbAFLm9iINCko0VWAo2%2Fscaled_image_picker1646461249622486742.jpg?alt=media&token=1d2e1f4c-824f-4487-9c77-ad582500e10d
-    https://firebasestorage.googleapis.com/v0/b/gallery-9900a.appspot.com/o/Images%2Fgfs7jVOYSqbAFLm9iINCko0VWAo2%2Fscaled_image_picker1646461249622486742.jpg?alt=media&token=1d2e1f4c-824f-4487-9c77-ad582500e10d
-
     try {
+
       uploadTask;
 
       imageUploadComplete;
+
     } on firebase_storage.FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
       print("#" * 100);

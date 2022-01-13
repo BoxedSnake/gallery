@@ -9,6 +9,7 @@ import 'package:english_words/english_words.dart';
 import 'package:gallery/view/imageDisplay.dart';
 import 'package:gallery/controller/imagePickerController.dart';
 import 'package:gallery/controller/dbController.dart';
+import 'package:gallery/controller/sorting_method.dart';
 
 class GalleryApp extends StatefulWidget {
   const GalleryApp({Key? key}) : super(key: key);
@@ -32,6 +33,8 @@ class _GalleryAppState extends State<GalleryApp> {
   String viewTitle = "Home";
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+  TextEditingController searchController = TextEditingController();
+
   //
   // bool viewtype = true;
   // bool gridisthree = true;
@@ -41,25 +44,23 @@ class _GalleryAppState extends State<GalleryApp> {
   void _toggleviewtype() {
     setState(() {
       // grid three
-      if (!VS.listView && VS.gridisthree) {
+      if ( VS.gridisthree) {
+        VS.listView = false;
         VS.gridisthree = false;
-        print(VS.gridisthree);
-        print(VS.listView);
       }
       //grid five
-      else if (!VS.listView && !VS.gridisthree) {
-        VS.gridisthree = true;
-        VS.listView = true;
-        print(VS.gridisthree);
-        print(VS.listView);
-      }
-      //list
-      else if (VS.listView && VS.gridisthree) {
+      else if (!VS.gridisthree) {
         VS.gridisthree = true;
         VS.listView = false;
-        print(VS.gridisthree);
-        print(VS.listView);
       }
+
+    });
+  }
+
+  void _toggleListView() {
+    //list
+    setState(() {
+      VS.listView = true;
     });
   }
 
@@ -87,7 +88,6 @@ class _GalleryAppState extends State<GalleryApp> {
         viewTitle = "Shared";
         database.toggleHomeView();
         imageList = database.querySnapshot();
-
       }
 
       print(database.isHomeView);
@@ -97,6 +97,10 @@ class _GalleryAppState extends State<GalleryApp> {
     print(database.querySnapshot().toString());
   }
 
+  void showSortMenu(){
+
+  }
+  
   //thumbnil button test________________________________________________
 
   // This is the type used by the popup menu below.
@@ -122,9 +126,13 @@ class _GalleryAppState extends State<GalleryApp> {
               icon: Icon(Icons.grid_view_outlined),
               onPressed: _toggleviewtype,
             ),
-            IconButton(
-              icon: Icon(Icons.sort_outlined),
-              onPressed: () {},
+            GestureDetector(
+              child: IconButton(
+                icon: Icon(Icons.sort_outlined),
+                onPressed: _toggleListView,
+              ),
+              // onLongPress: SortOptions(),
+
             ),
             IconButton(
               icon: Icon(Icons.lock_outlined),
@@ -135,8 +143,39 @@ class _GalleryAppState extends State<GalleryApp> {
           ]),
       extendBody: true,
       // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
-      body: imageDisplay(
-          VS.listView, VS.gridisthree, VS.imageButtonEnabled, imageList),
+      body: Column(children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 10,
+          ),
+          // padding: EdgeInsets.symmetric(horizontal: 10),
+          child: SizedBox(
+            child: TextFormField(
+              controller: searchController,
+              decoration: const InputDecoration(
+                labelText: 'Search',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  String searchpara = searchController.text;
+                  database.searchKey = searchpara;
+                  imageList = database.querySearch();
+                });
+              },
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return "Add a valid name";
+                }
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: imageDisplay(
+              VS.listView, VS.gridisthree, VS.imageButtonEnabled, imageList),
+        ),
+      ]),
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(

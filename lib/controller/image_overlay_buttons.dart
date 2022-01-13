@@ -87,7 +87,6 @@ class _moreoptionsState extends State<moreoptions> {
                 ],
               ),
             );
-
             break;
           case imageMenu.Rename:
             // TODO: Handle this case.
@@ -126,7 +125,7 @@ class _moreoptionsState extends State<moreoptions> {
             showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
-                content: Text("Are you sure you want to delete."),
+                content: Text("Are you sure you want to delete?"),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'Cancel'),

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:gallery/controller/dbController.dart';
 import 'package:gallery/model/imageModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gallery/controller/image_overlay_buttons.dart';
+import 'package:gallery/view/image/row_piece.dart';
 
 class listImage extends StatefulWidget {
-  final imageData;
-  final bool interfaceButtons;
+  final AsyncSnapshot<QuerySnapshot> snapshot;
+  final bool imageButtonEnabled;
 
-  listImage(this.imageData, this.interfaceButtons);
+  listImage(this.snapshot, this.imageButtonEnabled);
 
   @override
   _listImageState createState() => _listImageState();
@@ -18,30 +18,15 @@ class listImage extends StatefulWidget {
 class _listImageState extends State<listImage> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        leading: IconButton(
-          onPressed: () {
-            setState(() {
-              Database().favouriteImage(
-                widget.imageData['fileName'],
-                widget.imageData['Saved'],
-              );
-            });
-          },
+    return ListView(
+      children: widget.snapshot.data!.docs.map((DocumentSnapshot document) {
+        Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
 
-          icon: (widget.imageData['Saved'])
-              ? Icon(CupertinoIcons.heart_fill)
-              : Icon(CupertinoIcons.heart),
-        ),
-        title: Text(
-          widget.imageData['DisplayName'],
-        ),
-        subtitle: Text(
-          "Date Uploaded: " + widget.imageData['dateUploaded'],
-          style: TextStyle(fontSize: 10),
-        ),
-        // trailing: moreoptions(widget.imageData, )
+        var docId = document.id;
+        return RowImage(data, docId, widget.imageButtonEnabled);
+      }).toList(),
     );
-        // trailing: moreoptions());
+
+    // trailing: moreoptions());
   }
 }

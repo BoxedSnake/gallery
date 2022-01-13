@@ -17,10 +17,13 @@ class Database {
   final CollectionReference firebaseImages =
       FirebaseFirestore.instance.collection('userImages');
   bool isHomeView = true;
+  String searchKey = '';
 
   toggleHomeView() {
     isHomeView = !isHomeView;
   }
+
+  ///firebase auth functions --------------------------------
 
   /// authenticate functions
   String getCurrentUserId() {
@@ -32,11 +35,25 @@ class Database {
     await FirebaseAuth.instance.signOut();
   }
 
+  ///query functions ----------------------------------------
+
+  queryDateAscending() {
+    return queryHeader().orderBy('UploadedBy', descending: false).snapshots();
+  }
+
+  queryDateDescending() {
+    return queryHeader().orderBy('UploadedBy', descending: true).snapshots();
+  }
+
+  /// run query favourite
+  queryFavourites() {
+    return queryHeader().where('Saved', isEqualTo: true).snapshots();
+  }
+
   ///query header set
   queryHeader() {
-    var query;
-    String queryLocation = isHomeView ? "UploadedBy" : "Shared to Users";
-    var refValue = isHomeView ? getCurrentUserId() : true;
+    // String queryLocation = isHomeView ? "UploadedBy" : "Shared to Users";
+    // var refValue = isHomeView ? getCurrentUserId() : true;
     if (isHomeView) {
       var query =
           firebaseImages.where("UploadedBy", isEqualTo: getCurrentUserId());
@@ -51,9 +68,26 @@ class Database {
     }
   }
 
+  /// run query
   querySnapshot() {
     var query = queryHeader().snapshots();
     return query;
+  }
+
+  querySearch() {
+    if (searchKey != '') {
+      return queryHeader()
+          .where(
+            "DisplayName",
+            isGreaterThanOrEqualTo: searchKey,
+            isLessThan: searchKey.substring(0, searchKey.length - 1) +
+                String.fromCharCode(
+                    searchKey.codeUnitAt(searchKey.length - 1) + 1),
+          )
+          .snapshots();
+    } else {
+      return querySnapshot();
+    }
   }
 
   /// Cloud Storage __________________________________________
@@ -70,9 +104,8 @@ class Database {
   /// Firestore functions________________________________________________
   ///Firestore add new image
   ///
-  Future<void> firestoreAddImage(
-      String imageName, String imageAddress) {
-      // String imageName, String fileName, String imageAddress) {
+  Future<void> firestoreAddImage(String imageName, String imageAddress) {
+    // String imageName, String fileName, String imageAddress) {
     // String fileAddress = cloudStorageDownloadUrl(imageAddress) as String;
     // print(fileAddress);
 
@@ -110,8 +143,8 @@ class Database {
 
   ///Firestore rename current image
   Future<void> renameImage(
-      String fileName,
-      String imageName,
+    String fileName,
+    String imageName,
   ) {
     return firebaseImages
         .doc(fileName)

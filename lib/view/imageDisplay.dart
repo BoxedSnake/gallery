@@ -20,27 +20,32 @@ class imageDisplay extends StatefulWidget {
   final bool imageButtonEnabled;
   var imageList;
 
-  imageDisplay(this.listView, this.gridIsThree, this.imageButtonEnabled,
-      this.imageList, {Key? key}) : super(key: key);
+  imageDisplay(
+      this.listView, this.gridIsThree, this.imageButtonEnabled, this.imageList,
+      {Key? key})
+      : super(key: key);
 
   @override
   _imageDisplayState createState() => _imageDisplayState();
 }
 
 class _imageDisplayState extends State<imageDisplay> {
-
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
         stream: widget.imageList,
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Text('Something went wrong',
-                style: TextStyle(
-                  color: Colors.orange,
-                  fontSize: 20,
-                ));
+            return Center(
+              child: Column(
+                  children: const <Widget>[
+                    const Text('Something went wrong',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 20,
+                    )),
+              ]),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -50,7 +55,7 @@ class _imageDisplayState extends State<imageDisplay> {
                     CircularProgressIndicator(),
                     Text('Loading...',
                         style: TextStyle(
-                          color: Colors.orange,
+                          color: Colors.blue,
                           fontSize: 20,
                         ))
                   ]),
@@ -62,17 +67,15 @@ class _imageDisplayState extends State<imageDisplay> {
                 alignment: Alignment.center,
                 child: const Text("No results",
                     style: TextStyle(
-                      color: Colors.orange,
+                      color: Colors.blue,
                       fontSize: 20,
                     )));
-          }
-          else {
+          } else {
             return widget.listView
                 ? listImage(snapshot, widget.imageButtonEnabled)
                 : gridList(
-                snapshot, widget.gridIsThree, widget.imageButtonEnabled);
+                    snapshot, widget.gridIsThree, widget.imageButtonEnabled);
           }
-        }
-    );
+        });
   }
 }

@@ -5,6 +5,8 @@ import 'package:gallery/model/imageModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gallery/controller/image_overlay_buttons.dart';
 
+import 'image_detail_view.dart';
+
 class tileImage extends StatefulWidget {
   // final Map<String, dynamic> imageData;
   final imageData;
@@ -22,39 +24,50 @@ class _tileImageState extends State<tileImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: NetworkImage(widget.imageData['fileStorageLocation']),
-          fit: BoxFit.cover,
-        )),
-        child: (widget.interfaceButtons)
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  moreoptions(widget.imageData, widget.imageId),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        Database().favouriteImage(
-                          widget.imageId,
-                          widget.imageData['Saved'],
-                        );
-                      });
-                    },
+    return GestureDetector(
+      onTap: () {
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            content: ImageDetailView(widget.imageData, widget.imageId),
 
-                    // onPressed: togglebool(isLiked),
-                    icon: (widget.imageData['Saved'])
-                        ? Icon(CupertinoIcons.heart_fill)
-                        : Icon(CupertinoIcons.heart),
-                  )
-                ],
-              )
-            :
-            //
-            null
+          ),
+        );
+      },
+      child: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            image: NetworkImage(widget.imageData['fileStorageLocation']),
+            fit: BoxFit.cover,
+          )),
+          child: (widget.interfaceButtons)
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    moreoptions(widget.imageData, widget.imageId),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          Database().favouriteImage(
+                            widget.imageId,
+                            widget.imageData['Saved'],
+                          );
+                        });
+                      },
+
+                      // onPressed: togglebool(isLiked),
+                      icon: (widget.imageData['Saved'])
+                          ? Icon(CupertinoIcons.heart_fill)
+                          : Icon(CupertinoIcons.heart),
+                    )
+                  ],
+                )
+              :
+              //
+              null
+      ),
     );
   }
 }

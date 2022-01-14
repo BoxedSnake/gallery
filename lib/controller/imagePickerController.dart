@@ -25,7 +25,6 @@ class _imagePickerState extends State<imagePicker> {
   TextEditingController fileNameController = TextEditingController();
   File? file;
 
-  // final Database db = Database();
 
   void _openCamera(BuildContext context) async {
     final pickedFile = await ImagePicker().pickImage(
@@ -51,7 +50,6 @@ class _imagePickerState extends State<imagePicker> {
     Navigator.pop(context);
   }
 
-
 // widget to launch image and loard from url
 //   Widget UrlImage() {
 //     return Image.network(
@@ -70,7 +68,6 @@ class _imagePickerState extends State<imagePicker> {
 //       ));
 //     });
 //   }
-
 
   Widget buildUploadStatus(UploadTask task) => StreamBuilder<TaskSnapshot>(
         stream: task.snapshotEvents,
@@ -94,16 +91,12 @@ class _imagePickerState extends State<imagePicker> {
         },
       );
 
-
   Future<void> uploadSelectedImage() async {
     file = File(imageFile!.path.toString());
     String displayName = fileNameController.text.toString();
     var imageName = file!.path.split('/').last;
 
     var filepath = 'Images/${Database().getCurrentUserId()}/$imageName';
-    // var filepath = 'Images/${Database().getCurrentUserId()}/$storedInDBName';
-
-    // String imageUrl = await cloudStorageDownloadUrl(filepath);
 
     firebase_storage.SettableMetadata metadata =
         firebase_storage.SettableMetadata(
@@ -113,7 +106,6 @@ class _imagePickerState extends State<imagePicker> {
       },
     );
 
-// do the addto firebase
 
     final uploadTask = firebase_storage.FirebaseStorage.instance
         .ref(filepath)
@@ -126,42 +118,22 @@ class _imagePickerState extends State<imagePicker> {
     final downloadUrl = await snapshot.ref.getDownloadURL();
 
     Database().firestoreAddImage(displayName, downloadUrl);
-    // Database().firestoreAddImage(displayName, storedInDBName, downloadUrl);
-    // firebase_storage.TaskSnapshot.
-
-    ///upload selected image to cloud storage and metadata to firstore
-    // void postUpload()async{
-    //   String imageUrl = await cloudStorageDownloadUrl(filepath);
-    //   firestoreAddImage(displayName,storedInDBName,imageUrl);
-    //   Navigator.pop(context);
-    // }
 
     firebase_storage.TaskSnapshot imageUploadComplete =
         await uploadTask.whenComplete(() => Navigator.pop(context));
 
-    Widget uploadingImage() {
-      return AlertDialog(
-        title: Text("Uploading"),
-        content: Column(
-          children: [],
-        ),
-      );
-    }
-
     try {
-
       uploadTask;
-
       imageUploadComplete;
-
     } on firebase_storage.FirebaseException catch (e) {
-      // e.g, e.code == 'canceled'
+      // e.g, e.code == 'cancelled'
       print("#" * 100);
       print("Error Code has been called refer next line for more details:");
       print("$e");
       print("#" * 100);
-    } finally {}
+    }
   }
+
 
   Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
@@ -282,7 +254,8 @@ class _imagePickerState extends State<imagePicker> {
                                   scale: 10,
                                 ),
                         ),
-                        //TODO: link form to current image.
+
+                  //TODO: link form to current image.
                         // Form(
                         //   decoration: InputDecoration(
                         //     border: OutlineInputBorder(),

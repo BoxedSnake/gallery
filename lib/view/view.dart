@@ -9,7 +9,7 @@ import 'package:english_words/english_words.dart';
 import 'package:gallery/view/imageDisplay.dart';
 import 'package:gallery/controller/imagePickerController.dart';
 import 'package:gallery/controller/dbController.dart';
-import 'package:gallery/controller/sorting_method.dart';
+// import 'package:gallery/controller/sorting_method.dart';
 
 class GalleryApp extends StatefulWidget {
   const GalleryApp({Key? key}) : super(key: key);
@@ -17,6 +17,7 @@ class GalleryApp extends StatefulWidget {
   @override
   _GalleryAppState createState() => _GalleryAppState();
 }
+enum queryOptions { Original, DateAscending, DateDescending, Filename, Favourites }
 
 class gridViewProperty {
   bool listView = false;
@@ -34,6 +35,7 @@ class _GalleryAppState extends State<GalleryApp> {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   TextEditingController searchController = TextEditingController();
+  String searchBox = '';
 
   //
   // bool viewtype = true;
@@ -44,7 +46,7 @@ class _GalleryAppState extends State<GalleryApp> {
   void _toggleviewtype() {
     setState(() {
       // grid three
-      if ( VS.gridisthree) {
+      if (VS.gridisthree) {
         VS.listView = false;
         VS.gridisthree = false;
       }
@@ -53,7 +55,6 @@ class _GalleryAppState extends State<GalleryApp> {
         VS.gridisthree = true;
         VS.listView = false;
       }
-
     });
   }
 
@@ -97,23 +98,77 @@ class _GalleryAppState extends State<GalleryApp> {
     print(database.querySnapshot().toString());
   }
 
-  void showSortMenu(){
+  PopupMenuButton<queryOptions> showSortMenu() {
+    return PopupMenuButton<queryOptions>(
+      onSelected: (sortType) {
+        switch (sortType) {
+          case queryOptions.Original:
+            setState(() {
+              imageList = Database().querySnapshot();
+               searchController.clear() ;
+               searchBox = '';
+            });
 
+            break;
+            case queryOptions.DateAscending:
+            setState(() {
+              imageList = Database().queryDateAscending();
+              searchController.clear() ;
+              searchBox = '';
+            });
+
+            break;
+          case queryOptions.DateDescending:
+            setState(() {
+              imageList = Database().queryDateDescending();
+              searchController.clear() ;
+              searchBox = '';
+            });
+
+            break;
+          case queryOptions.Filename:
+            setState(() {
+              imageList = Database().queryName();
+              searchController.clear() ;
+              searchBox = '';
+            });
+
+            break;
+          case queryOptions.Favourites:
+            setState(() {
+              imageList = Database().queryFavourites();
+              searchController.clear() ;
+              searchBox = '';
+            });
+
+            break;
+        }
+      },
+      icon: Icon(Icons.more_vert),
+      itemBuilder: (BuildContext context) {
+        return [
+          const PopupMenuItem(
+              value: queryOptions.Original, child: Text("Default")),
+          const PopupMenuItem(
+              value: queryOptions.Filename, child: Text("Name")),
+          const PopupMenuItem(
+              value: queryOptions.DateAscending, child: Text("DateAscending")),
+          const PopupMenuItem(
+              value: queryOptions.DateDescending, child: Text("DateDescending")),
+          const PopupMenuItem(
+              value: queryOptions.Favourites, child: Text("Favourites")),
+        ];
+      },
+    );
   }
-  
-  //thumbnil button test________________________________________________
-
-  // This is the type used by the popup menu below.
-
-// This menu button widget updates a _selection field (of type WhyFarther,
-// not shown here).
-
-  //________________________________________________
 
   @override
   Widget build(BuildContext context) {
     imageList ??= database.querySnapshot();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomPadding: false,
+
       appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.logout_outlined),
@@ -122,28 +177,23 @@ class _GalleryAppState extends State<GalleryApp> {
           title: Text(viewTitle),
           // title: const Text('Gallery'),
           actions: [
+            showSortMenu(),
             IconButton(
               icon: Icon(Icons.grid_view_outlined),
               onPressed: _toggleviewtype,
             ),
-            GestureDetector(
-              onLongPress: SortOptions().
-              child: IconButton(
-                icon: Icon(Icons.sort_outlined),
-                onPressed: _toggleListView,
-              ),
-              // onLongPress: SortOptions(),
-
+            IconButton(
+              icon: Icon(Icons.sort_outlined),
+              onPressed: _toggleListView,
             ),
+            // onLongPress: SortOptions(),
+
             IconButton(
               icon: Icon(Icons.lock_outlined),
               onPressed: toggleLocked,
             ),
-
-            // IconButton(onPressed: _expandLayout, icon: icon)
           ]),
       extendBody: true,
-      // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
       body: Column(children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -159,9 +209,8 @@ class _GalleryAppState extends State<GalleryApp> {
               ),
               onChanged: (value) {
                 setState(() {
-                  String searchpara = searchController.text;
-                  database.searchKey = searchpara;
-                  imageList = database.querySearch();
+                  searchBox = searchController.text;
+                  imageList = database.querySearch(searchBox);
                 });
               },
               validator: (String? value) {
@@ -180,6 +229,8 @@ class _GalleryAppState extends State<GalleryApp> {
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(
+
+        isExtended: true,
           onPressed: () {
             Navigator.push(
               context,

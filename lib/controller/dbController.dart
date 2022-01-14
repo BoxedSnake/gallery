@@ -18,6 +18,7 @@ class Database {
       FirebaseFirestore.instance.collection('userImages');
   bool isHomeView = true;
   String searchKey = '';
+  var returnList;
 
   toggleHomeView() {
     isHomeView = !isHomeView;
@@ -38,11 +39,16 @@ class Database {
   ///query functions ----------------------------------------
 
   queryDateAscending() {
-    return queryHeader().orderBy('UploadedBy', descending: false).snapshots();
+    // return queryHeader().orderBy('dateUploaded', ascending: true).snapshots();
+    return queryHeader().orderBy('dateUploaded', descending: false).snapshots();
+  }
+
+  queryName() {
+    return queryHeader().orderBy('DisplayName').snapshots();
   }
 
   queryDateDescending() {
-    return queryHeader().orderBy('UploadedBy', descending: true).snapshots();
+    return queryHeader().orderBy('dateUploaded', descending: true).snapshots();
   }
 
   /// run query favourite
@@ -74,15 +80,15 @@ class Database {
     return query;
   }
 
-  querySearch() {
-    if (searchKey != '') {
+  querySearch(String searchValue) {
+    if (searchValue != '') {
       return queryHeader()
           .where(
             "DisplayName",
-            isGreaterThanOrEqualTo: searchKey,
-            isLessThan: searchKey.substring(0, searchKey.length - 1) +
+            isGreaterThanOrEqualTo: searchValue,
+            isLessThan: searchValue.substring(0, searchValue.length - 1) +
                 String.fromCharCode(
-                    searchKey.codeUnitAt(searchKey.length - 1) + 1),
+                    searchValue.codeUnitAt(searchValue.length - 1) + 1),
           )
           .snapshots();
     } else {

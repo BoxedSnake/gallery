@@ -4,7 +4,6 @@ import 'package:gallery/controller/dbController.dart';
 enum queryOptions { DateAscending, DateDescending, Filename, Favourites }
 
 class SortOptions extends StatefulWidget {
-
   const SortOptions({Key? key}) : super(key: key);
 
   @override
@@ -12,6 +11,7 @@ class SortOptions extends StatefulWidget {
 }
 
 class _SortOptionsState extends State<SortOptions> {
+  var returnValue;
   var sortType = queryOptions;
 
   @override
@@ -32,16 +32,15 @@ class _SortOptionsState extends State<SortOptions> {
             break;
           case queryOptions.Filename:
             // TODO: Handle this case.
-          Database().querySnapshot();
+            Database().querySnapshot();
             break;
           case queryOptions.Favourites:
             // TODO: Handle this case.
-          Database().queryFavourites();
+            Database().queryFavourites();
             break;
         }
       },
-      icon: Icon(Icons.sort_outlined),
-
+      icon: Icon(Icons.more_vert),
       itemBuilder: (BuildContext context) {
         return [
           const PopupMenuItem(

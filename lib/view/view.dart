@@ -127,6 +127,7 @@ class _GalleryAppState extends State<GalleryApp> {
               onPressed: _toggleviewtype,
             ),
             GestureDetector(
+              onLongPress: SortOptions().
               child: IconButton(
                 icon: Icon(Icons.sort_outlined),
                 onPressed: _toggleListView,

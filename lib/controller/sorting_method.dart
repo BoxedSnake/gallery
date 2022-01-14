@@ -4,6 +4,7 @@ import 'package:gallery/controller/dbController.dart';
 enum queryOptions { DateAscending, DateDescending, Filename, Favourites }
 
 class SortOptions extends StatefulWidget {
+
   const SortOptions({Key? key}) : super(key: key);
 
   @override

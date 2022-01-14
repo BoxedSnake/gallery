@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery/controller/dbController.dart';
 import 'package:gallery/controller/imagePickerController.dart';
 import 'package:gallery/main.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,82 +8,99 @@ import 'package:gallery/auth/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:gallery/view/imageDisplay.dart';
 import 'package:gallery/controller/imagePickerController.dart';
+import 'package:gallery/controller/dbController.dart';
+import 'package:gallery/controller/sorting_method.dart';
 
-
-class RandomWords extends StatefulWidget {
-  const RandomWords({Key? key}) : super(key: key);
+class GalleryApp extends StatefulWidget {
+  const GalleryApp({Key? key}) : super(key: key);
 
   @override
-  _RandomWordsState createState() => _RandomWordsState();
+  _GalleryAppState createState() => _GalleryAppState();
 }
 
-// enum viewStyle{gridthree,gridfive,list};
-enum ImageViews { gridThree, gridFive, list }
-
-enum ImageMenu { Share, Rename, Remove }
-
-class gridViewProp {
+class gridViewProperty {
   bool listView = false;
   bool gridisthree = true;
   bool imageButtonEnabled = true;
 }
 
-
-class _RandomWordsState extends State<RandomWords> {
+class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
-  var suggestions = <WordPair>[];
   var biggerFont = TextStyle(fontSize: 18.0);
-  var VS = new gridViewProp();
+  final VS = gridViewProperty();
+  final database = Database();
+  var imageList;
+  String viewTitle = "Home";
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  TextEditingController searchController = TextEditingController();
+
   //
   // bool viewtype = true;
   // bool gridisthree = true;
 
   // ______________________________________________________________
-
+  /// allow for the view modifications - completed
   void _toggleviewtype() {
     setState(() {
       // grid three
-      if (!VS.listView && VS.gridisthree) {
-        // VS.listView=!VS.listView;
+      if ( VS.gridisthree) {
+        VS.listView = false;
         VS.gridisthree = false;
-        print(VS.gridisthree);
-        print(VS.listView);
       }
       //grid five
-      else if (!VS.listView && !VS.gridisthree) {
-        VS.gridisthree = true;
-        VS.listView = true;
-        print(VS.gridisthree);
-        print(VS.listView);
-      }
-      //list
-      else if (VS.listView && VS.gridisthree) {
+      else if (!VS.gridisthree) {
         VS.gridisthree = true;
         VS.listView = false;
-        print(VS.gridisthree);
-        print(VS.listView);
       }
+
     });
   }
 
-  toggleLocked(){
+  void _toggleListView() {
+    //list
+    setState(() {
+      VS.listView = true;
+    });
+  }
+
+  toggleLocked() {
     setState(() {
       VS.imageButtonEnabled = !VS.imageButtonEnabled;
     });
   }
 
-  toggleliked(isLiked) {
-    setState(() {});
+  toggleHome() {
+    setState(() {
+      if (database.isHomeView != true) {
+        viewTitle = "Home";
+        database.toggleHomeView();
+        imageList = database.querySnapshot();
+      }
+    });
+    print(database.isHomeView);
+    print(database.querySnapshot().toString());
   }
 
-  Future<void> _signout() async {
-    await FirebaseAuth.instance.signOut();
+  toggleShared() {
+    setState(() {
+      if (database.isHomeView == true) {
+        viewTitle = "Shared";
+        database.toggleHomeView();
+        imageList = database.querySnapshot();
+      }
+
+      print(database.isHomeView);
+      print(database.querySnapshot().toString());
+    });
+    print(database.isHomeView);
+    print(database.querySnapshot().toString());
   }
 
-  void _home() {
-    setState(() {});
-  }
+  void showSortMenu(){
 
+  }
+  
   //thumbnil button test________________________________________________
 
   // This is the type used by the popup menu below.
@@ -94,31 +112,71 @@ class _RandomWordsState extends State<RandomWords> {
 
   @override
   Widget build(BuildContext context) {
+    imageList ??= database.querySnapshot();
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.logout_outlined),
-            onPressed: _signout,
+            onPressed: Database().signout,
           ),
-          title: const Text('Gallery'), actions: [
-        IconButton(
-          icon: Icon(Icons.grid_view_outlined),
-          onPressed: _toggleviewtype,
-        ),
-        IconButton(
-          icon: Icon(Icons.sort_outlined),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(Icons.lock_outlined),
-          onPressed: toggleLocked,
-        ),
+          title: Text(viewTitle),
+          // title: const Text('Gallery'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.grid_view_outlined),
+              onPressed: _toggleviewtype,
+            ),
+            GestureDetector(
+              onLongPress: SortOptions().
+              child: IconButton(
+                icon: Icon(Icons.sort_outlined),
+                onPressed: _toggleListView,
+              ),
+              // onLongPress: SortOptions(),
 
-        // IconButton(onPressed: _expandLayout, icon: icon)
-      ]),
+            ),
+            IconButton(
+              icon: Icon(Icons.lock_outlined),
+              onPressed: toggleLocked,
+            ),
+
+            // IconButton(onPressed: _expandLayout, icon: icon)
+          ]),
       extendBody: true,
-      body: buildSuggestions(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
-      // body: buildSuggestions(viewSetting.viewtype, viewSetting.gridisthree, suggestions),
+      // body: imageDisplay(VS.listView, VS.gridisthree, VS.imageButtonEnabled, suggestions),
+      body: Column(children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 10,
+          ),
+          // padding: EdgeInsets.symmetric(horizontal: 10),
+          child: SizedBox(
+            child: TextFormField(
+              controller: searchController,
+              decoration: const InputDecoration(
+                labelText: 'Search',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  String searchpara = searchController.text;
+                  database.searchKey = searchpara;
+                  imageList = database.querySearch();
+                });
+              },
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return "Add a valid name";
+                }
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: imageDisplay(
+              VS.listView, VS.gridisthree, VS.imageButtonEnabled, imageList),
+        ),
+      ]),
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(
@@ -137,7 +195,7 @@ class _RandomWordsState extends State<RandomWords> {
   Widget _bottomNavBar() {
     return BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Colors.black,
+        color: Colors.blue,
         child: IconTheme(
           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
           child: Row(
@@ -148,7 +206,7 @@ class _RandomWordsState extends State<RandomWords> {
                 children: [
                   IconButton(
                     constraints: BoxConstraints(),
-                    onPressed: _home,
+                    onPressed: toggleHome,
                     tooltip: 'Shows local photos',
                     color: Colors.white,
                     icon: const Icon(Icons.home_outlined),
@@ -163,7 +221,7 @@ class _RandomWordsState extends State<RandomWords> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: toggleShared,
                     tooltip: 'Shows shared photos',
                     padding: EdgeInsets.zero,
                     constraints: BoxConstraints(),

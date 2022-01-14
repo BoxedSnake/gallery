@@ -33,11 +33,23 @@ class _AuthGateState extends State<AuthGate> {
       builder: (context, snapshot) {
         // User is not signed in
         if (!snapshot.hasData) {
-          return const SignInScreen(
-            providerConfigs:[
-              EmailProviderConfiguration(),
-            ],
+          return GestureDetector(
+            onTap: () {FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus){
+              currentFocus.unfocus();
+            }
+    },
+            child: SignInScreen(
+              headerBuilder: (context,constraints,_){
+                  return Padding(padding: EdgeInsets.all(20),
+                  child: Container(),);
+                },
+                providerConfigs:[
+                  EmailProviderConfiguration(),
+                ],
+              ),
           );
+
 
           // return Scaffold(
           //     resizeToAvoidBottomInset: false,

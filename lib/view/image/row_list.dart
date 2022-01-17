@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery/controller/dbController.dart';
-import 'package:gallery/model/imageModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gallery/view/image/row_piece.dart';
 

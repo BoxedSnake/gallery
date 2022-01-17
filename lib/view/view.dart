@@ -1,15 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/controller/dbController.dart';
-import 'package:gallery/controller/imagePickerController.dart';
-import 'package:gallery/main.dart';
+import 'package:gallery/controller/image_picker_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:gallery/auth/login.dart';
-import 'package:english_words/english_words.dart';
-import 'package:gallery/view/imageDisplay.dart';
-import 'package:gallery/controller/imagePickerController.dart';
-import 'package:gallery/controller/dbController.dart';
-// import 'package:gallery/controller/sorting_method.dart';
+import 'package:gallery/view/image_display.dart';
 
 class GalleryApp extends StatefulWidget {
   const GalleryApp({Key? key}) : super(key: key);
@@ -17,6 +11,7 @@ class GalleryApp extends StatefulWidget {
   @override
   _GalleryAppState createState() => _GalleryAppState();
 }
+
 enum queryOptions { Original, DateAscending, DateDescending, Filename, Favourites }
 
 class gridViewProperty {
@@ -27,21 +22,16 @@ class gridViewProperty {
 
 class _GalleryAppState extends State<GalleryApp> {
   //___________________________________________________________
-  var biggerFont = TextStyle(fontSize: 18.0);
   final VS = gridViewProperty();
   final database = Database();
   var imageList;
   String viewTitle = "Home";
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+/// form search key
   TextEditingController searchController = TextEditingController();
   String searchBox = '';
 
-  //
-  // bool viewtype = true;
-  // bool gridisthree = true;
-
-  // ______________________________________________________________
   /// allow for the view modifications - completed
   void _toggleviewtype() {
     setState(() {
@@ -182,9 +172,14 @@ class _GalleryAppState extends State<GalleryApp> {
               icon: Icon(Icons.grid_view_outlined),
               onPressed: _toggleviewtype,
             ),
-            IconButton(
-              icon: Icon(Icons.sort_outlined),
-              onPressed: _toggleListView,
+            GestureDetector(
+              onLongPress: (){
+                showSortMenu();
+              },
+              child: IconButton(
+                icon: Icon(Icons.sort_outlined),
+                onPressed: _toggleListView,
+              ),
             ),
             // onLongPress: SortOptions(),
 
@@ -229,7 +224,8 @@ class _GalleryAppState extends State<GalleryApp> {
 
       bottomNavigationBar: _bottomNavBar(),
       floatingActionButton: FloatingActionButton(
-
+        // backgroundColor: Colors.blue,
+        // foregroundColor: Colors.white,
         isExtended: true,
           onPressed: () {
             Navigator.push(
@@ -246,49 +242,57 @@ class _GalleryAppState extends State<GalleryApp> {
   Widget _bottomNavBar() {
     return BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Colors.blue,
-        child: IconTheme(
-          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    constraints: BoxConstraints(),
-                    onPressed: toggleHome,
-                    tooltip: 'Shows local photos',
-                    color: Colors.white,
-                    icon: const Icon(Icons.home_outlined),
-                  ),
-                  const Text(
-                    "Home",
-                    style: TextStyle(color: Colors.white, fontSize: 10),
-                  )
-                ],
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: toggleShared,
-                    tooltip: 'Shows shared photos',
-                    padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(),
-                    icon: const Icon(Icons.people_outlined),
-                  ),
-                  const Text(
-                    "Shared",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
+        // color: Colors.blue,
+        // child: IconTheme(
+        //   data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+          child: Container(
+            height: 50,
+            child: Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: toggleHome,
+                      tooltip: 'Shows local photos',
+                      // color: Colors.white,
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(),
+                      icon: const Icon(Icons.home_outlined, size: 30),
+
                     ),
-                  )
-                ],
-              )
-            ],
+                    const Text(
+                      "Home",
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    )
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: toggleShared,
+                      tooltip: 'Shows shared photos',
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(),
+                      icon: const Icon(Icons.people_outlined,size: 30),
+                    ),
+                    const Text(
+                      "Shared",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
-        ));
+        // )
+    );
   }
 }
+

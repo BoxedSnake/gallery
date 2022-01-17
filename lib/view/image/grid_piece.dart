@@ -1,14 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/controller/dbController.dart';
-import 'package:gallery/model/imageModel.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gallery/controller/image_overlay_buttons.dart';
 
 import 'image_detail_view.dart';
 
 class tileImage extends StatefulWidget {
-  // final Map<String, dynamic> imageData;
   final imageData;
   final imageId;
   final bool interfaceButtons;
@@ -20,7 +17,6 @@ class tileImage extends StatefulWidget {
 }
 
 class _tileImageState extends State<tileImage> {
-  //Database().favouriteImage(widget.imageData['fileName'],widget.imageData['Saved'],),
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +26,6 @@ class _tileImageState extends State<tileImage> {
           context: context,
           builder: (BuildContext context) => AlertDialog(
             content: ImageDetailView(widget.imageData, widget.imageId),
-
           ),
         );
       },
@@ -58,16 +53,21 @@ class _tileImageState extends State<tileImage> {
                       },
 
                       // onPressed: togglebool(isLiked),
-                      icon: (widget.imageData['Saved'])
-                          ? Icon(CupertinoIcons.heart_fill)
-                          : Icon(CupertinoIcons.heart),
+                      icon: IconFavourites(widget.imageData['Saved'])
+                         ,
                     )
                   ],
                 )
               :
               //
-              null
-      ),
+              null),
     );
   }
+}
+
+Widget IconFavourites(bool properties) {
+  Color _bgColor = Colors.black;
+
+  return Icon(properties ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+      color: _bgColor.computeLuminance() > 0.5 ? Colors.white : Colors.blue);
 }

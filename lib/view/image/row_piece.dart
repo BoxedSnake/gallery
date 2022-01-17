@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery/controller/dbController.dart';
-import 'package:gallery/model/imageModel.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gallery/controller/image_overlay_buttons.dart';
 import 'package:intl/intl.dart';
 import 'package:gallery/view/image/image_detail_view.dart';

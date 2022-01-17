@@ -17,41 +17,6 @@ class moreoptions extends StatefulWidget {
   _moreoptionsState createState() => _moreoptionsState();
 }
 
-// Future<void> _showMyDialog() async {
-//   return showDialog<void>(
-//       context: context,
-//       barrierDismissible: false, // user must tap button!
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text(Title),
-//           content: SingleChildScrollView(
-//             child: Column(
-//               children: <Widget>[
-//                 Text('This is a demo alert dialog.'),
-//                 Text('Would you like to confirm this message?'),
-//               ],
-//             ),
-//           ),
-//           actions: <Widget>[
-//             TextButton(
-//               child: Text('Confirm'),
-//               onPressed: () {
-//                 print('Confirmed');
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//             TextButton(
-//               child: Text('Cancel'),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//           ],
-//         );
-//       });
-// }
-
-
 class _moreoptionsState extends State<moreoptions> {
   var menuOption = imageMenu;
   bool _validate = false;
@@ -70,6 +35,7 @@ class _moreoptionsState extends State<moreoptions> {
             showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
+                title: Text("Share Image"),
                 content: Text("Do you want to share this picture?"),
                 actions: <Widget>[
                   TextButton(
@@ -95,6 +61,7 @@ class _moreoptionsState extends State<moreoptions> {
             showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
+                title: Text("Rename Image"),
                 content: TextField(
                   controller: rename,
                   decoration: InputDecoration(
@@ -125,6 +92,7 @@ class _moreoptionsState extends State<moreoptions> {
             showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
+                title: Text("Remove Image"),
                 content: Text("Are you sure you want to delete?"),
                 actions: <Widget>[
                   TextButton(
@@ -147,7 +115,8 @@ class _moreoptionsState extends State<moreoptions> {
       },
 
 
-      icon: const Icon(Icons.more_vert),
+      icon: const Icon(Icons.more_vert,
+      color: Colors.blue,),
       itemBuilder: (BuildContext context) {
         return [
           const PopupMenuItem(

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gallery/controller/uploadImage.dart';
-import 'uploadImage.dart.';
+import 'package:gallery/controller/upload_image.dart';
+import 'upload_image.dart.';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';

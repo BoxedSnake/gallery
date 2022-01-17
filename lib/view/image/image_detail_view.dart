@@ -1,11 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery/controller/dbController.dart';
-import 'package:gallery/model/imageModel.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gallery/controller/image_overlay_buttons.dart';
 import 'package:intl/intl.dart';
-import 'package:gallery/controller/dbController.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ImageDetailView extends StatefulWidget {
   final imageData;
@@ -31,47 +29,77 @@ class _ImageDetailViewState extends State<ImageDetailView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: GestureDetector(
-                // onTap: () => Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) =>
-                //             SelectImage(widget.imageData['Download URL']))),
-                child: Image.network(widget.imageData['fileStorageLocation'],
-                    // width: 300, height: 300,
-                    // fit: BoxFit.cover,
+          ///image container
+          // Container(
+          //   child: PhotoView(
+          //     imageProvider:
+          //         NetworkImage(widget.imageData['fileStorageLocation']),
+          //
+          //   ),
+          // ),
+          Container(
+            color: Colors.white30,
+            child: InteractiveViewer(
+              boundaryMargin: EdgeInsets.all(10),
+              minScale: 0.5,
+              maxScale: 10,
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                // padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.network(
+                  widget.imageData['fileStorageLocation'],
                   scale: 2,
-
                 ),
-              )
+              ),
+            ),
           ),
+
+          ///image detail container
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             child: Column(children: <Widget>[
-//Displays the image name
-//               Text(widget.imageData['fileStorageLocation'],
-//                   style: const TextStyle(
-//                       fontWeight: FontWeight.bold,
-//                       fontSize: 30,
-//                       color: Colors.orange)),
-
-//Displays the userID of the uploaded image
+              ///Displays the userID of the uploaded image
+              Divider(),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text("Image Name: ${widget.imageData['DisplayName']}",
-                    style: const TextStyle(fontSize: 14, color: Colors.blue)),
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      const Text(
+                        "Image Name: ",
+                        style: TextStyle(fontSize: 14, color: Colors.blue),
+                        textAlign: TextAlign.start,
+                      ),
+                      Text("${widget.imageData['DisplayName']}",
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.blue)),
+                    ]),
               ),
+              const Divider(),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Text("Uploaded by: ${widget.imageData['UploadedBy']}",
-                    style: const TextStyle(fontSize: 14, color: Colors.blue)),
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Column(children: <Widget>[
+                  Text(
+                    "Uploaded by: ",
+                    style: const TextStyle(fontSize: 14, color: Colors.blue),
+                    textAlign: TextAlign.start,
+                  ),
+                  Text("${widget.imageData['UploadedBy']}",
+                      style: const TextStyle(fontSize: 14, color: Colors.blue)),
+                ]),
               ),
 
-//Displays the date uploaded
-              Text("Uploaded on: " + timeConverstion(),
-                  style: const TextStyle(fontSize: 14, color: Colors.blue)),
+              Divider(),
+
+              ///Displays the date uploaded
+              Column(
+                children: <Widget>[
+                  Text("Uploaded on: ",
+                      style: const TextStyle(fontSize: 14, color: Colors.blue)),
+                  Text(timeConverstion(),
+                      style: const TextStyle(fontSize: 14, color: Colors.blue)),
+                ],
+              ),
             ]),
           ),
         ],
